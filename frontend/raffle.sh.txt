@@ -1,0 +1,49 @@
+# Raffle API
+
+# used to create a new raffle for a meetup
+# returns an 8 alphanumeric shortcode and 201 Created, or an error
+# can be used to do a raffle raffle.serverless.com/xf4c85g9
+# Admin Only
+curl -X POST \
+  http://localhost:4000/raffle/create \
+  -H 'content-type: application/json' \
+  -d '{"meetup":"Serverless Atlanta"}'
+
+# Lists all the raffles, default 'active'
+# returns the state (start or end), list of participants registered for the raffle
+# Admin Only
+curl -X GET \
+  http://localhost:4000/raffle
+
+curl -X GET \
+  http://localhost:4000/raffle?state=inactive
+
+# Get the raffle with id
+# returns the status (active or inactive), list of participants registered for the raffle
+# Admin Only
+curl -X GET \
+  http://localhost:4000/raffle/xf4c85g9
+
+# used to start or end a raffle
+# returns a 200 OK if successful, or an error
+# If not signed up for the Platform, user is redirected to the signup page
+# The shortcode `xf4c85g9` from the initial raffle url is passed along
+# this endpoint should be mobile friendly
+# Admin Only
+curl -X POST \
+  http://localhost:4000/raffle/xf4c85g9/start
+
+curl -X POST \
+  http://localhost:4000/raffle/xf4c85g9/stop
+
+# used to register a user for a raffle
+# returns a 200 OK if successful, or an error 401 if not signed up with Platform
+# or retruns 404 if raffle with shortcode does not exist
+# If not signed up for the Platform, user is redirected to the signup page
+# The shortcode `xf4c85g9` from the initial raffle url is passed along
+# this endpoint should be mobile friendly
+# Public
+curl -X POST \
+  http://localhost:4000/raffle/xf4c85g9/register
+
+

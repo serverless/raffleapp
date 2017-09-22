@@ -1,0 +1,55 @@
+# raffle service
+
+service: raffle
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  region: us-east-1
+
+functions:
+# Admin only APIs
+  create:
+    handler: admin.create
+    events:
+      - http:
+          path: /raffle/create
+          method: post
+          cors: true
+  list:
+    handler: admin.list
+    events:
+      - http:
+          path: /raffle
+          method: get
+          cors: true
+  show:
+    handler: admin.show
+    events:
+      - http:
+          path: /raffle/{shortcode}
+          method: get
+          cors: true
+  start:
+    handler: admin.start
+    events:
+      - http:
+          path: /raffle/{shortcode}/start
+          method: post
+          cors: true
+  stop:
+    handler: admin.stop
+    events:
+      - http:
+          path: /raffle/{shortcode}/stop
+          method: post
+          cors: true
+
+# public APIs
+  register:
+    handler: handler.register
+    events:
+      - http:
+          path: /raffle/{shortcode}/register
+          method: post
+          cors: true

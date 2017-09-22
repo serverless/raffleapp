@@ -1,0 +1,11 @@
+{
+  "name": "raffle",
+  "version": "1.0.0",
+  "description": "a serverless raffle service",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rupak Ganguly",
+  "license": "MIT"
+}
