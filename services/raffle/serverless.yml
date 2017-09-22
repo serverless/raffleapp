@@ -29,6 +29,10 @@ functions:
       - http:
           path: /raffle/{shortcode}
           method: get
+          request:
+            parameters:
+              paths:
+                shortcode: true          
           cors: true
   start:
     handler: admin.start

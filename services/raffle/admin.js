@@ -6,9 +6,9 @@ module.exports.create = (event, context, callback) => {
 
   const response = {
     statusCode: 201,
-    location: '/raffle/'+shortcode,
+    location: `/raffle/${shortcode}`,
     body: JSON.stringify({
-      message: 'Created new raffle with shortcode.',
+      message: 'Created new raffle with shortcode: '+shortcode,
       shortcode: shortcode,
       input: event,
     }),
@@ -34,12 +34,16 @@ module.exports.list = (event, context, callback) => {
 
 module.exports.show = (event, context, callback) => {
 
+  var shortcode = event.pathParameters.shortcode
+
+  console.log(`Shortcode recd. is: ${shortcode}`)
+
   // fetch raffle with specified shortcode and 'state=active'
 
   const response = {
     statusCode: 200,
     body: JSON.stringify({
-      message: 'Showing details of raffle for given shortcode.',
+      message: 'Showing details of raffle for given shortcode: '+shortcode,
       input: event,
     }),
   };
@@ -49,12 +53,16 @@ module.exports.show = (event, context, callback) => {
 
 module.exports.start = (event, context, callback) => {
 
+  var shortcode = event.pathParameters.shortcode
+  
+  console.log(`Shortcode recd. is: ${shortcode}`)
+  
   // update 'state=active' raffle with specified shortcode
 
   const response = {
     statusCode: 204,
     body: JSON.stringify({
-      message: 'Starting raffle for given shortcode and picking a winner.',
+      message: 'Starting raffle for given shortcode: '+ shortcode +' and picking a winner.',
       input: event,
     }),
   };
@@ -64,12 +72,16 @@ module.exports.start = (event, context, callback) => {
 
 module.exports.stop = (event, context, callback) => {
 
+  var shortcode = event.pathParameters.shortcode
+  
+  console.log(`Shortcode recd. is: ${shortcode}`)
+  
   // update 'state=inactive' raffle with specified shortcode
 
   const response = {
     statusCode: 204,
     body: JSON.stringify({
-      message: 'Stopping raffle for given shortcode.',
+      message: 'Stopping raffle for given shortcode: '+shortcode,
       input: event,
     }),
   };
