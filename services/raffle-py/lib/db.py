@@ -2,6 +2,7 @@ import datetime
 import os
 
 import boto3
+import dateutil.parser
 
 from .utils import generate_shortcode
 
@@ -26,3 +27,26 @@ def create_raffle(name, admins, client=CLIENT):
     )
 
     return shortcode
+
+
+def clean_item(item):
+    return {
+      'created_at': item.get('created_at').get('S'),
+      'name': item.get('name').get('S'),
+      'shortcode': item.get('shortcode').get('S'),
+    }
+
+
+def get_timestamp(item):
+    return dateutil.parser.parse(item.get('created_at'))
+
+
+def get_raffles(limit=10, client=CLIENT):
+    resp = client.scan(
+        TableName=RAFFLE_TABLE_NAME
+    )
+    items = resp.get('Items')
+    cleaned = [clean_item(item) for item in items]
+    sorted_items = sorted(cleaned, reverse=True, key=get_timestamp)
+
+    return sorted_items[:limit]

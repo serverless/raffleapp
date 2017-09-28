@@ -33,6 +33,13 @@ functions:
           path: /create
           method: post
           cors: true
+  list:
+    handler: handlers/list.handler
+    events:
+      - http:
+          path: /
+          method: get
+          cors: true
   show:
     handler: handlers/show.handler
     events:
@@ -43,13 +50,6 @@ functions:
             parameters:
               paths:
                 shortcode: true          
-          cors: true
-  list:
-    handler: admin.list
-    events:
-      - http:
-          path: /
-          method: get
           cors: true
   start:
     handler: admin.start
