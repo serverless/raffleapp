@@ -50,3 +50,20 @@ def get_raffles(limit=10, client=CLIENT):
     sorted_items = sorted(cleaned, reverse=True, key=get_timestamp)
 
     return sorted_items[:limit]
+
+
+def get_raffle(shortcode, client=CLIENT):
+    raffle = {
+        'shortcode': shortcode
+    }
+    resp = client.get_item(
+        TableName=RAFFLE_TABLE_NAME,
+        Key={
+            'shortcode': {'S': shortcode}
+        }
+    )
+    item = resp.get('Item')
+    raffle['name'] = item.get('name').get('S')
+    raffle['created_at'] = item.get('created_at').get('S')
+
+    return raffle
