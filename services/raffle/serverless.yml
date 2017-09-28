@@ -6,28 +6,41 @@ provider:
   name: aws
   runtime: nodejs6.10
   region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: { "Fn::GetAtt": ["RafflesDynamoDBTable", "Arn" ] }
+    
+  environment:
+    RAFFLE_TABLE: { "Ref": "RafflesDynamoDBTable" }
 
 functions:
 # Admin only APIs
   create:
-    handler: admin.create
+    handler: handlers/create.handler
     events:
       - http:
-          path: /raffle/create
+          path: /create
           method: post
           cors: true
   list:
     handler: admin.list
     events:
       - http:
-          path: /raffle
+          path: /
           method: get
           cors: true
   show:
     handler: admin.show
     events:
       - http:
-          path: /raffle/{shortcode}
+          path: /{shortcode}
           method: get
           request:
             parameters:
@@ -38,15 +51,12 @@ functions:
     handler: admin.start
     events:
       - http:
-          path: /raffle/{shortcode}/start
+          path: /{shortcode}/start
           method: post
-          cors: true
-  stop:
-    handler: admin.stop
-    events:
-      - http:
-          path: /raffle/{shortcode}/stop
-          method: post
+          request:
+            parameters:
+              paths:
+                shortcode: true          
           cors: true
 
 # public APIs
@@ -54,6 +64,27 @@ functions:
     handler: handler.register
     events:
       - http:
-          path: /raffle/{shortcode}/register
+          path: /{shortcode}/register
           method: post
+          request:
+            parameters:
+              paths:
+                shortcode: true          
           cors: true
+
+resources:
+  Resources:
+    RafflesDynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: shortcode
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: shortcode
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

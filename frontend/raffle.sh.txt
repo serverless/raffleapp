@@ -5,9 +5,9 @@
 # can be used to do a raffle raffle.serverless.com/xf4c85g9
 # Admin Only
 curl -X POST \
-  http://localhost:4000/raffle/create \
+  http://localhost:4000/create \
   -H 'content-type: application/json' \
-  -d '{"meetup":"Serverless Atlanta"}'
+  -d '{"name":"Serverless Atlanta October", "admins": ["rupak@atlanta.com"]}'
 
 # Lists all the raffles, default 'active'
 # returns the state (start or end), list of participants registered for the raffle
