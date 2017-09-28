@@ -1,3 +1,4 @@
+from botocore.exceptions import ClientError
 import datetime
 import os
 
@@ -7,7 +8,15 @@ import dateutil.parser
 from .utils import generate_shortcode
 
 RAFFLE_TABLE_NAME = os.environ.get('RAFFLE_TABLE')
+ENTRY_TABLE_NAME = os.environ.get('ENTRY_TABLE')
 CLIENT = boto3.client('dynamodb')
+
+
+class RaffleDoesNotExist(Exception):
+    pass
+
+class UserAlreadyRegistered(Exception):
+    pass
 
 
 def create_raffle(name, admins, client=CLIENT):
@@ -67,3 +76,33 @@ def get_raffle(shortcode, client=CLIENT):
     raffle['created_at'] = item.get('created_at').get('S')
 
     return raffle
+
+
+def register_for_raffle(shortcode, email, client=CLIENT):
+    dt = datetime.datetime.now().isoformat()
+
+    resp = client.get_item(
+        TableName=RAFFLE_TABLE_NAME,
+        Key={
+            'shortcode': {'S': shortcode}
+        }
+    )
+
+    if not resp.get('Item'):
+        raise RaffleDoesNotExist()
+
+    try:
+        resp = client.put_item(
+            TableName=ENTRY_TABLE_NAME,
+            Item={
+                'shortcode': {'S': shortcode},
+                'email': {'S': email},
+                'registered_at': {'S': dt},
+            },
+            # Don't want to overwrite an existing raffle if same shortcode is generated.
+            ConditionExpression="attribute_not_exists(email)",
+        )
+    except ClientError as e:
+        if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
+            raise UserAlreadyRegistered()
+        raise e
