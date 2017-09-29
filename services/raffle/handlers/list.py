@@ -9,19 +9,31 @@ def handler(event, context):
         email= auth.get_email(event['headers'])
     except auth.MissingAuthentication:
         return {
-          "statusCode": 401,
-          "body": json.dumps({"error": "Please authorize with an Authorization header."})
+            "statusCode": 401,
+            "headers": {
+                "Access-Control-Allow-Origin" : "*",
+                "Access-Control-Allow-Credentials" : True
+            },
+            "body": json.dumps({"error": "Please authorize with an Authorization header."})
         }
     except auth.InvalidAuthentication as e:
         return {
-          "statusCode": 401,
-          "body": json.dumps({"error": e.message })
+            "statusCode": 401,
+            "headers": {
+                "Access-Control-Allow-Origin" : "*",
+                "Access-Control-Allow-Credentials" : True
+            },
+            "body": json.dumps({"error": e.message })
         }
 
     if not auth.can_view_raffles(email):
         return {
-          "statusCode": 403,
-          "body": json.dumps({"error": "User not authorized to view all raffles."})
+            "statusCode": 403,
+            "headers": {
+                "Access-Control-Allow-Origin" : "*",
+                "Access-Control-Allow-Credentials" : True
+            },
+            "body": json.dumps({"error": "User not authorized to view all raffles."})
         }
 
     try:
@@ -29,12 +41,20 @@ def handler(event, context):
     except Exception as e:
         print(e)
         return {
-          "statusCode": 503,
-          "body": json.dumps({"message": "Could not get raffles. Please try again."})
+            "statusCode": 503,
+            "headers": {
+                "Access-Control-Allow-Origin" : "*",
+                "Access-Control-Allow-Credentials" : True
+            },
+            "body": json.dumps({"message": "Could not get raffles. Please try again."})
         }
 
     response = {
         "statusCode": 200,
+        "headers": {
+            "Access-Control-Allow-Origin" : "*",
+            "Access-Control-Allow-Credentials" : True
+        },
         "body": json.dumps(raffles)
     }
 

@@ -21,6 +21,8 @@ def get_email(headers, required=True):
 
     if not auth and required:
         raise MissingAuthentication()
+    if not required and not auth:
+        return ''
 
     parts = auth.split()
 
@@ -31,7 +33,11 @@ def get_email(headers, required=True):
     elif len(parts) > 2:
         raise InvalidAuthentication('Authorization header must be a Bearer token')
 
-    email = get_email_from_auth(auth)
+    try:
+        email = get_email_from_auth(auth)
+    except Exception as e:
+        print(e)
+        raise InvalidAuthentication('Authentication was not valid.')
 
     return email
 
