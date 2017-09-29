@@ -1,16 +1,15 @@
 {
-  "name": "raffle",
+  "name": "raffle-py",
   "version": "1.0.0",
-  "description": "a serverless raffle service",
-  "main": "handler.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Rupak Ganguly",
-  "license": "MIT",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
-  },
-  "dependencies": {
-    "aws-sdk": "^2.123.0"
+    "serverless-python-requirements": "^3.0.1"
   }
 }
