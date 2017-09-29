@@ -2,10 +2,17 @@ service: raffle-py
 
 plugins:
   - serverless-python-requirements
+  - serverless-domain-manager
+
 
 custom:
   pythonRequirements:
     dockerizePip: true
+  customDomain:
+    domainName: 'raffle.serverlessteam.com'
+    basePath: ''
+    stage: ${self:provider.stage}
+    createRoute53Record: true
 
 provider:
   name: aws
