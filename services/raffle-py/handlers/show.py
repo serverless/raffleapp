@@ -5,7 +5,7 @@ from lib import db, auth
 
 def handler(event, context):
 
-    email= auth.get_email(event['headers'], required=False)
+    email = auth.get_email(event['headers'], required=False)
 
     shortcode = event.get('pathParameters').get('shortcode')
 

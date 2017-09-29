@@ -12,6 +12,11 @@ def handler(event, context):
           "statusCode": 401,
           "body": json.dumps({"error": "Please authorize with an Authorization header."})
         }
+    except auth.InvalidAuthentication as e:
+        return {
+          "statusCode": 401,
+          "body": json.dumps({"error": e.message })
+        }
 
     if not auth.can_create_raffle(email):
         return {
