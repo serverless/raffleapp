@@ -1,9 +1,23 @@
 import json
 
-from lib import db
+from lib import db, auth
 
 
 def handler(event, context):
+
+    try:
+        email= auth.get_email(event['headers'])
+    except auth.MissingAuthentication:
+        return {
+          "statusCode": 401,
+          "body": json.dumps({"error": "Please authorize with an Authorization header."})
+        }
+
+    if not auth.can_create_raffle(email):
+        return {
+          "statusCode": 403,
+          "body": json.dumps({"error": "User not authorized to to create a raffle."})
+        }
 
     body = json.loads(event.get('body'))
     name = body.get('name')

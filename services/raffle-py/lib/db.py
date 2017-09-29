@@ -5,6 +5,7 @@ import os
 import boto3
 import dateutil.parser
 
+from .auth import is_raffle_admin
 from .utils import generate_shortcode
 
 RAFFLE_TABLE_NAME = os.environ.get('RAFFLE_TABLE')
@@ -61,9 +62,10 @@ def get_raffles(limit=10, client=CLIENT):
     return sorted_items[:limit]
 
 
-def get_raffle(shortcode, client=CLIENT):
+def get_raffle(shortcode, email, client=CLIENT):
     raffle = {
-        'shortcode': shortcode
+        'shortcode': shortcode,
+        'admin': False,
     }
     resp = client.get_item(
         TableName=RAFFLE_TABLE_NAME,
@@ -72,8 +74,29 @@ def get_raffle(shortcode, client=CLIENT):
         }
     )
     item = resp.get('Item')
+
+    if not item:
+        raise RaffleDoesNotExist()
+
+    admins = item.get('admins', {}).get('SS')
+
+    if is_raffle_admin(email, admins):
+        raffle['admin'] = True
+
     raffle['name'] = item.get('name').get('S')
     raffle['created_at'] = item.get('created_at').get('S')
+    raffle['registered'] = False
+
+    if email:
+        resp = client.get_item(
+            TableName=ENTRY_TABLE_NAME,
+            Key={
+                'shortcode': {'S': shortcode},
+                'email': {'S': email},
+            }
+        )
+        if resp.get('Item'):
+            raffle['registered'] = True
 
     return raffle
 

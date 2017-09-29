@@ -1,13 +1,19 @@
 import json
 
-from lib import db
+from lib import db, auth
 
 
 def handler(event, context):
 
     shortcode = event.get('pathParameters').get('shortcode')
-    body = json.loads(event.get('body'))
-    email = body.get('email')
+
+    try:
+        email= auth.get_email(event['headers'])
+    except auth.MissingAuthentication:
+        return {
+          "statusCode": 401,
+          "body": json.dumps({"error": "Please authorize with an Authorization header."})
+        }
 
     try:
         db.register_for_raffle(shortcode, email)
