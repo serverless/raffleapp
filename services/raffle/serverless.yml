@@ -37,7 +37,7 @@ functions:
           method: get
           cors: true
   show:
-    handler: admin.show
+    handler: handlers/show.handler
     events:
       - http:
           path: /{shortcode}

@@ -14,24 +14,6 @@ module.exports.list = (event, context, callback) => {
   callback(null, response);
 };
 
-module.exports.show = (event, context, callback) => {
-  const shortcode = event.pathParameters.shortcode;
-
-  console.log(`Shortcode recd. is: ${shortcode}`)
-
-  // fetch raffle with specified shortcode and 'state=active'
-
-  const response = {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: 'Showing details of raffle for given shortcode: '+shortcode,
-      input: event,
-    }),
-  };
-
-  callback(null, response);
-};
-
 module.exports.start = (event, context, callback) => {
 
   var shortcode = event.pathParameters.shortcode
