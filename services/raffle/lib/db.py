@@ -103,6 +103,9 @@ def get_raffle(shortcode, email, client=CLIENT):
         if resp.get('Item'):
             raffle['isRegistered'] = True
 
+    if raffle['admin']:
+        raffle['entries'] = _get_all_emails(shortcode)
+
     return raffle
 
 
@@ -134,32 +137,6 @@ def register_for_raffle(shortcode, email, client=CLIENT):
         if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
             raise UserAlreadyRegistered()
         raise e
-
-
-def get_raffle_emails(shortcode, email, client=CLIENT):
-    raffle = {
-        'shortcode': shortcode,
-    }
-    resp = client.get_item(
-        TableName=RAFFLE_TABLE_NAME,
-        Key={
-            'shortcode': {'S': shortcode}
-        }
-    )
-    item = resp.get('Item')
-    if not item:
-        raise RaffleDoesNotExist()
-
-    admins = item.get('admins', {}).get('SS')
-
-    if not is_raffle_admin(email, admins):
-        raise InvalidAuthentication('Not an admin for this raffle')
-
-    emails = _get_all_emails(shortcode)
-
-    raffle['emails'] = emails
-
-    return raffle
 
 
 def _get_all_emails(shortcode, last_key=None, client=CLIENT):

@@ -50,22 +50,11 @@ functions:
           path: /
           method: get
           cors: true
-  show:
-    handler: handlers/show.handler
+  getRaffle:
+    handler: handlers/get_raffle.handler
     events:
       - http:
           path: /{shortcode}
-          method: get
-          request:
-            parameters:
-              paths:
-                shortcode: true
-          cors: true
-  listEntries:
-    handler: handlers/list_entries.handler
-    events:
-      - http:
-          path: /{shortcode}/entries
           method: get
           request:
             parameters:
