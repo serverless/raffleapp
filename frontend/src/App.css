@@ -1,0 +1,84 @@
+body {
+  background-color: #b2b2b2;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.wrapper {
+  display: flex;
+  flex-grow: 1;
+}
+
+.nav {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  background: #3e3e3e;
+}
+
+.left-nav {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 73px;
+}
+.left-nav:after {
+  content: '';
+  transform: rotate(-72deg);
+  overflow-x: hidden;
+  position: absolute;
+  background: #2f2f2f;
+  width: 310px;
+  height: 180px;
+  left: -187px;
+}
+
+.nav-email {
+  margin-left: auto;
+}
+
+.right-nav {
+  margin-left: auto;
+}
+
+.logo {
+  padding: 0 10px;
+  position: relative;
+  z-index: 9;
+  padding-left: 20px;
+}
+
+.logoText {
+  width: 97px;
+  margin-left: 0px;
+}
+
+.authButton {
+  background-color: #FD5750;
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  font-size: 16px;
+  margin-right: 20px;
+}
+
+.content {
+  display: flex;
+  padding: 40px;
+  border: 10px solid goldenrod;
+  min-height: 90vh;
+  min-width: 670px;
+  max-width: 670px;
+  margin: auto;
+
+}
+.content h1 {
+  width: 100%;
+  text-align: center;
+  margin-top: 0px;
+}

@@ -1,11 +1,23 @@
-# raffle service
+service: raffle-py
 
-service: raffle
+plugins:
+  - serverless-python-requirements
+  - serverless-domain-manager
+
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+  customDomain:
+    domainName: 'raffle.serverlessteam.com'
+    basePath: ''
+    stage: ${self:provider.stage}
+    createRoute53Record: true
 
 provider:
   name: aws
-  runtime: nodejs6.10
-  region: us-east-1
+  runtime: python3.6
+  region: us-west-2
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -15,13 +27,15 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: { "Fn::GetAtt": ["RafflesDynamoDBTable", "Arn" ] }
+      Resource:
+        - { "Fn::GetAtt": ["RafflesDynamoDBTable", "Arn" ] }
+        - { "Fn::GetAtt": ["EntriesDynamoDBTable", "Arn" ] }
     
   environment:
     RAFFLE_TABLE: { "Ref": "RafflesDynamoDBTable" }
+    ENTRY_TABLE: { "Ref": "EntriesDynamoDBTable" }
 
 functions:
-# Admin only APIs
   create:
     handler: handlers/create.handler
     events:
@@ -30,7 +44,7 @@ functions:
           method: post
           cors: true
   list:
-    handler: admin.list
+    handler: handlers/list.handler
     events:
       - http:
           path: /
@@ -61,7 +75,7 @@ functions:
 
 # public APIs
   register:
-    handler: handler.register
+    handler: handlers/register.handler
     events:
       - http:
           path: /{shortcode}/register
@@ -85,6 +99,26 @@ resources:
           -
             AttributeName: shortcode
             KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    EntriesDynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: shortcode
+            AttributeType: S
+          -
+            AttributeName: email
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: shortcode
+            KeyType: HASH
+          -
+            AttributeName: email
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
