@@ -33,8 +33,15 @@ class Home extends Component {
     if (this.state.raffles.length) {
       return (
         <ul>
-          { this.state.raffles.map(raffle => 
-            <li><a href={`/raffle/${raffle.shortcode}`}>{raffle.name}</a></li>
+          { this.state.raffles.map((raffle, i) =>
+            <li key={i}>
+              <div>
+                <a href={`/${raffle.shortcode}`}>{raffle.name}</a>
+                <span>{raffle.createdAt}</span>
+              </div>
+              <div>Winner: blah</div>
+              <div>share link: http:blah{raffle.shortcode}</div>
+            </li>
           )}
         </ul>
       )
