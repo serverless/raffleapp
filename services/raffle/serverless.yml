@@ -72,11 +72,11 @@ functions:
               paths:
                 shortcode: true
           cors: true
-  start:
-    handler: admin.start
+  setWinner:
+    handler: handlers/set_winner.handler
     events:
       - http:
-          path: /{shortcode}/start
+          path: /{shortcode}/winner
           method: post
           request:
             parameters:

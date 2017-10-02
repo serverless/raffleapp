@@ -24,15 +24,6 @@ def handler(event, context):
             },
             "body": json.dumps({"message": "Raffle {} does not exist.".format(shortcode)})
         }
-    except db.RaffleHasWinner:
-        return {
-            "statusCode": 409,
-            "headers": {
-                "Access-Control-Allow-Origin" : "*",
-                "Access-Control-Allow-Credentials" : True
-            },
-            "body": json.dumps({"message": "Raffle {} already has a winner.".format(shortcode)})
-        }
     except auth.InvalidAuthentication as e:
         return {
             "statusCode": 401,
@@ -50,7 +41,7 @@ def handler(event, context):
                 "Access-Control-Allow-Origin" : "*",
                 "Access-Control-Allow-Credentials" : True
             },
-            "body": json.dumps({"message": "Could not get raffle. Please try again."})
+            "body": json.dumps({"message": "Could not get raffle entries. Please try again."})
         }
 
     response = {

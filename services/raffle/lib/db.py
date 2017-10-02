@@ -47,6 +47,7 @@ def clean_item(item):
       'createdAt': item.get('created_at').get('S'),
       'name': item.get('name').get('S'),
       'shortcode': item.get('shortcode').get('S'),
+      'winner': item.get('winner', {}).get('S'),
     }
 
 
@@ -88,6 +89,7 @@ def get_raffle(shortcode, email, client=CLIENT):
 
     raffle['name'] = item.get('name').get('S')
     raffle['createdAt'] = item.get('created_at').get('S')
+    raffle['winner'] = item.get('winner', {}).get('S')
     raffle['isRegistered'] = False
 
     if email:
@@ -148,10 +150,6 @@ def get_raffle_emails(shortcode, email, client=CLIENT):
     if not item:
         raise RaffleDoesNotExist()
 
-    winner = item.get('winner', {}).get('S')
-    if winner:
-        raise RaffleHasWinner()
-
     admins = item.get('admins', {}).get('SS')
 
     if not is_raffle_admin(email, admins):
@@ -185,3 +183,41 @@ def _get_all_emails(shortcode, last_key=None, client=CLIENT):
         emails.append(item.get('email').get('S'))
 
     return emails
+
+
+def set_winner_for_raffle(shortcode, email, winner, client=CLIENT):
+    resp = client.get_item(
+        TableName=RAFFLE_TABLE_NAME,
+        Key={
+            'shortcode': {'S': shortcode}
+        }
+    )
+    item = resp.get('Item')
+
+    if not item:
+        raise RaffleDoesNotExist()
+
+    admins = item.get('admins', {}).get('SS')
+
+    if not is_raffle_admin(email, admins):
+        raise auth.InvalidAuthentication('User is not an admin for this raffle.')
+
+    try:
+        resp = client.update_item(
+            TableName=RAFFLE_TABLE_NAME,
+            Key={
+                'shortcode': {'S': shortcode},
+            },
+            UpdateExpression="SET winner = :winner",
+            ExpressionAttributeValues={
+                ":winner": {'S': winner},
+            },
+            # Don't want to overwrite an existing raffle if same shortcode is generated.
+            ConditionExpression="attribute_not_exists(winner)",
+        )
+    except ClientError as e:
+        if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
+            raise RaffleHasWinner()
+        raise e
+
+    return winner
