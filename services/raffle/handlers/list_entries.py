@@ -9,22 +9,12 @@ logger.setLevel(logging.INFO)
 
 def handler(event, context):
 
+    email = auth.get_email(event['headers'], required=False)
+
     shortcode = event.get('pathParameters').get('shortcode')
 
     try:
-        email= auth.get_email(event['headers'])
-    except auth.MissingAuthentication:
-        return {
-            "statusCode": 401,
-            "headers": {
-                "Access-Control-Allow-Origin" : "*",
-                "Access-Control-Allow-Credentials" : True
-            },
-            "body": json.dumps({"error": "Please authorize with an Authorization header."})
-        }
-
-    try:
-        db.register_for_raffle(shortcode, email)
+        raffle = db.get_raffle_emails(shortcode, email)
     except db.RaffleDoesNotExist:
         return {
             "statusCode": 404,
@@ -34,15 +24,23 @@ def handler(event, context):
             },
             "body": json.dumps({"message": "Raffle {} does not exist.".format(shortcode)})
         }
-    except db.UserAlreadyRegistered:
-        message = "{email} already registered for raffle {shortcode}".format(email=email, shortcode=shortcode)
+    except db.RaffleHasWinner:
         return {
             "statusCode": 409,
             "headers": {
                 "Access-Control-Allow-Origin" : "*",
                 "Access-Control-Allow-Credentials" : True
             },
-            "body": json.dumps({"message": message })
+            "body": json.dumps({"message": "Raffle {} already has a winner.".format(shortcode)})
+        }
+    except auth.InvalidAuthentication as e:
+        return {
+            "statusCode": 401,
+            "headers": {
+                "Access-Control-Allow-Origin" : "*",
+                "Access-Control-Allow-Credentials" : True
+            },
+            "body": json.dumps({"error": e.message })
         }
     except Exception as e:
         logger.exception(e)
@@ -52,7 +50,7 @@ def handler(event, context):
                 "Access-Control-Allow-Origin" : "*",
                 "Access-Control-Allow-Credentials" : True
             },
-            "body": json.dumps({"message": "Could not register for raffle. Please try again."})
+            "body": json.dumps({"message": "Could not get raffle. Please try again."})
         }
 
     response = {
@@ -61,10 +59,7 @@ def handler(event, context):
             "Access-Control-Allow-Origin" : "*",
             "Access-Control-Allow-Credentials" : True
         },
-        "body": json.dumps({
-            "shortcode": shortcode,
-            "email": email
-        })
+        "body": json.dumps(raffle)
     }
 
     return response

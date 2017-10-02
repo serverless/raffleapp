@@ -1,6 +1,10 @@
 import json
+import logging
 
 from lib import db, auth
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 
 def handler(event, context):
@@ -21,7 +25,7 @@ def handler(event, context):
             "body": json.dumps({"message": "Raffle {} does not exist.".format(shortcode)})
         }
     except Exception as e:
-        print(e)
+        logger.exception(e)
         return {
             "statusCode": 503,
             "headers": {

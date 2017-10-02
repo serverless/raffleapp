@@ -43,8 +43,8 @@ functions:
           path: /create
           method: post
           cors: true
-  list:
-    handler: handlers/list.handler
+  listRaffles:
+    handler: handlers/list_raffles.handler
     events:
       - http:
           path: /
@@ -59,7 +59,18 @@ functions:
           request:
             parameters:
               paths:
-                shortcode: true          
+                shortcode: true
+          cors: true
+  listEntries:
+    handler: handlers/list_entries.handler
+    events:
+      - http:
+          path: /{shortcode}/entries
+          method: get
+          request:
+            parameters:
+              paths:
+                shortcode: true
           cors: true
   start:
     handler: admin.start

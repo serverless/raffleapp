@@ -19,6 +19,9 @@ class RaffleDoesNotExist(Exception):
 class UserAlreadyRegistered(Exception):
     pass
 
+class RaffleHasWinner(Exception):
+    pass
+
 
 def create_raffle(name, admins, client=CLIENT):
     shortcode = generate_shortcode()
@@ -41,14 +44,14 @@ def create_raffle(name, admins, client=CLIENT):
 
 def clean_item(item):
     return {
-      'created_at': item.get('created_at').get('S'),
+      'createdAt': item.get('created_at').get('S'),
       'name': item.get('name').get('S'),
       'shortcode': item.get('shortcode').get('S'),
     }
 
 
 def get_timestamp(item):
-    return dateutil.parser.parse(item.get('created_at'))
+    return dateutil.parser.parse(item.get('createdAt'))
 
 
 def get_raffles(limit=10, client=CLIENT):
@@ -84,8 +87,8 @@ def get_raffle(shortcode, email, client=CLIENT):
         raffle['admin'] = True
 
     raffle['name'] = item.get('name').get('S')
-    raffle['created_at'] = item.get('created_at').get('S')
-    raffle['registered'] = False
+    raffle['createdAt'] = item.get('created_at').get('S')
+    raffle['isRegistered'] = False
 
     if email:
         resp = client.get_item(
@@ -96,7 +99,7 @@ def get_raffle(shortcode, email, client=CLIENT):
             }
         )
         if resp.get('Item'):
-            raffle['registered'] = True
+            raffle['isRegistered'] = True
 
     return raffle
 
@@ -129,3 +132,56 @@ def register_for_raffle(shortcode, email, client=CLIENT):
         if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
             raise UserAlreadyRegistered()
         raise e
+
+
+def get_raffle_emails(shortcode, email, client=CLIENT):
+    raffle = {
+        'shortcode': shortcode,
+    }
+    resp = client.get_item(
+        TableName=RAFFLE_TABLE_NAME,
+        Key={
+            'shortcode': {'S': shortcode}
+        }
+    )
+    item = resp.get('Item')
+    if not item:
+        raise RaffleDoesNotExist()
+
+    winner = item.get('winner', {}).get('S')
+    if winner:
+        raise RaffleHasWinner()
+
+    admins = item.get('admins', {}).get('SS')
+
+    if not is_raffle_admin(email, admins):
+        raise InvalidAuthentication('Not an admin for this raffle')
+
+    emails = _get_all_emails(shortcode)
+
+    raffle['emails'] = emails
+
+    return raffle
+
+
+def _get_all_emails(shortcode, last_key=None, client=CLIENT):
+    emails = []
+    params = {
+        "TableName": ENTRY_TABLE_NAME,
+        "ProjectionExpression": "email",
+        "KeyConditionExpression": "shortcode = :shortcode",
+        "ExpressionAttributeValues": {
+            ":shortcode": {"S": shortcode},
+        },
+    }
+    if last_key:
+        params['ExclusiveStartKey'] = last_key
+    resp = client.query(**params)
+    print(resp)
+    if 'LastEvaluatedKey' in resp:
+        emails += _get_all_emails(shortcode, resp['LastEvaluatedKey'])
+
+    for item in resp['Items']:
+        emails.append(item.get('email').get('S'))
+
+    return emails

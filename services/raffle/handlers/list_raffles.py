@@ -1,6 +1,10 @@
 import json
+import logging
 
 from lib import db, auth
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 
 def handler(event, context):
@@ -39,7 +43,7 @@ def handler(event, context):
     try:
         raffles = db.get_raffles()
     except Exception as e:
-        print(e)
+        logger.exception(e)
         return {
             "statusCode": 503,
             "headers": {
