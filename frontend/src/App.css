@@ -70,15 +70,12 @@ body {
 .content {
   display: flex;
   padding: 40px;
-  border: 10px solid goldenrod;
-  min-height: 90vh;
-  min-width: 670px;
-  max-width: 670px;
   margin: auto;
-
+  flex-direction: column;
 }
 .content h1 {
   width: 100%;
   text-align: center;
   margin-top: 0px;
+
 }

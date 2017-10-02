@@ -14,42 +14,77 @@ class ShowRaffle extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      raffle: {}
-    };
+    this.state = {};
   }
   componentDidMount() {
     const shortcode = this.props.match.params.shortcode;
     instance.get(`${shortcode}`)
       .then(res => {
+        console.log(res.data)
         const raffle = res.data;
-        this.setState({ raffle })
+        this.setState(raffle)
       })
       .catch(error => {
         if (error.response.status === 404) {
-          const raffle = {
+          this.setState({
             exists: false,
-          }
-          this.setState({ raffle })
+          })
         }
       })
   }
+  enterRaffle = () => {
+    const id = this.props.match.params.shortcode
+    const url = `https://raffle.serverlessteam.com/${id}/register`
+    axios({
+      url: url,
+      method: 'post',
+      headers: {
+        'Authorization': SITE_CONFIG.auth
+      }
+    }).then((response) => {
+      console.log(response)
+      this.setState({
+        isRegistered: true
+      })
+      return response.data
+    }).catch((e) => {
+      // this.setState({
+      //   isRegistered: f
+      // })
+    })
+  }
   registerButton() {
-    if (this.state.raffle && this.state.raffle.registered === false) {
-      return <h3>Please make me into a 'REGISTER' button!</h3>
+    const { auth } = this.props
+    const { isRegistered } = this.state
+
+    if(!auth.isAuthenticated()) {
+      return (
+        <button onClick={auth.login}>
+          Login and Register
+        </button>
+      )
+    }
+
+    if (isRegistered === false) {
+      return (
+        <button onClick={this.enterRaffle}>
+          Register
+        </button>
+      )
     }
   }
   showRaffle() {
-    if (this.state.raffle && this.state.raffle.exists !== false) {
+    console.log(this.state)
+    if (this.state.exists !== false) {
       return (
         <div>
           <h3>Raffle Details:</h3>
           <ul>
-            <li>Name: {this.state.raffle.name}</li>
-            <li>Shortcode: {this.state.raffle.shortcode}</li>
-            <li>Created at: {this.state.raffle.created_at}</li>
-            <li>Are you registered: { (this.state.raffle.registered) ? 'Yes' : 'No' } </li>
-            <li>Are you an admin: { (this.state.raffle.admin) ? 'Yes' : 'No' }</li>
+            <li>Name: {this.state.name}</li>
+            <li>Shortcode: {this.state.shortcode}</li>
+            <li>Created at: {this.state.created_at}</li>
+            <li>Are you registered: { (this.state.isRegistered) ? 'Yes' : 'No' } </li>
+            <li>Are you an admin: { (this.state.admin) ? 'Yes' : 'No' }</li>
           </ul>
         </div>
       )
@@ -69,6 +104,7 @@ class ShowRaffle extends Component {
           </h2>
           { this.showRaffle() }
           { this.registerButton() }
+          <div>Run raffle(admin)</div>
       </div>
     );
   }
