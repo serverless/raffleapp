@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom'
 import { SITE_CONFIG } from './../config';
 
 
@@ -52,9 +53,19 @@ class Home extends Component {
     }
   }
   render() {
+    const { auth } = this.props
+    let createLink
+    let listOfRaffles
+    if (auth.isAuthenticated()) {
+      createLink = (
+        <Link className='create-button' to='/create'>create new raffle</Link>
+      )
+      listOfRaffles = this.renderRaffles()
+    }
     return (
       <div className="content">
-        { this.renderRaffles() }
+        {createLink}
+        {listOfRaffles}
       </div>
     );
   }
