@@ -21,7 +21,7 @@ export const makeMainRoutes = () => {
   const create = (props) => !auth.isAuthenticated() ? homeRedirect : <Create {...props} />
   return (
       <Router history={history} component={App}>
-        <div>
+        <div className="app-contents">
           <Route path="/" render={(props) => <App auth={auth} {...props} />} />
           <Switch>
             <Route path="/" exact render={(props) => <Home auth={auth} {...props} />} />

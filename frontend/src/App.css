@@ -6,6 +6,12 @@ body {
   line-height: 20px;
 }
 
+.app-contents {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .wrapper {
   display: flex;
   flex-grow: 1;
@@ -69,7 +75,6 @@ body {
 .content {
   display: flex;
   padding: 40px;
-  margin: auto;
   flex-direction: column;
 }
 .content h1 {

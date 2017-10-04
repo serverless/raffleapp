@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom'
 import './App.css';
 
 class App extends Component {
@@ -16,6 +17,15 @@ class App extends Component {
 
   render() {
     const { isAuthenticated } = this.props.auth;
+    let navLink = <img alt="Serverless logo" src="https://s3-us-west-2.amazonaws.com/assets.site.serverless.com/logos/serverless-logo.svg"/>
+
+    if(isAuthenticated()) {
+      navLink = (
+        <Link to='/'>
+          <img alt="Serverless logo" src="https://s3-us-west-2.amazonaws.com/assets.site.serverless.com/logos/serverless-logo.svg"/>
+        </Link>
+      )
+    }
 
     return (
       <div className="App">
@@ -23,7 +33,7 @@ class App extends Component {
           <div className='nav-bg'></div>
           <div className="left-nav">
             <div className="logo">
-              <img alt="Serverless logo" src="https://s3-us-west-2.amazonaws.com/assets.site.serverless.com/logos/serverless-logo.svg"/>
+              {navLink}
             </div>
           </div>
           <div className="logoText">

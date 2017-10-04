@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom'
+import styles from './styles.css'
 import { SITE_CONFIG } from './../config';
 
 
@@ -16,7 +17,8 @@ class Home extends Component {
     super(props);
 
     this.state = {
-      raffles: []
+      raffles: [],
+      search: ''
     };
   }
   componentDidMount() {
@@ -30,21 +32,29 @@ class Home extends Component {
   login() {
     this.props.auth.login();
   }
+  handleSearch = (event) => {
+    this.setState({
+      search: event.target.value
+    })
+  }
   renderRaffles() {
-    if (this.state.raffles.length) {
+    const { raffles, search } = this.state
+    if (raffles.length) {
       return (
-        <ul>
-          { this.state.raffles.map((raffle, i) =>
-            <li key={i}>
+        <div className="raffleList">
+          { raffles.filter((item) => {
+              return item.name.toLowerCase().indexOf(search) > -1 || item.name.indexOf(search) > -1
+            }).map((raffle, i) =>
+            <div className="raffleItem" key={i}>
               <div>
-                <a href={`/${raffle.shortcode}`}>{raffle.name}</a>
-                <span>{raffle.createdAt}</span>
+                <Link to={`/${raffle.shortcode}`}>{raffle.name}</Link>
               </div>
-              <div>Winner: blah</div>
+              <span>{raffle.createdAt}</span>
+              <div>Winner: Steve</div>
               <div>share link: http:blah{raffle.shortcode}</div>
-            </li>
+            </div>
           )}
-        </ul>
+        </div>
       )
     } else {
       return (
@@ -54,18 +64,31 @@ class Home extends Component {
   }
   render() {
     const { auth } = this.props
-    let createLink
-    let listOfRaffles
-    if (auth.isAuthenticated()) {
-      createLink = (
-        <Link className='create-button' to='/create'>create new raffle</Link>
-      )
-      listOfRaffles = this.renderRaffles()
+    if (!auth.isAuthenticated()) {
+      return (
+        <div className="landing-page">
+          <div className="contents">
+            <h1>Serverless Raffles</h1>
+            <p>The 100% serverless raffle app for picking the winners!</p>
+            <a className="landing-button">Clone the repo</a>
+          </div>
+        </div>
+      );
     }
     return (
       <div className="content">
-        {createLink}
-        {listOfRaffles}
+        <div className="actions">
+          <div className="searchWrapper">
+            <input
+              onChange={this.handleSearch}
+              className="search"
+              type="text"
+              placeholder="Search raffles"
+            />
+          </div>
+          <Link className='create-button' to='/create'>create new raffle</Link>
+        </div>
+        {this.renderRaffles()}
       </div>
     );
   }
