@@ -42,7 +42,7 @@ class App extends Component {
           <div className="right-nav">
           { isAuthenticated()
            ? <button className="authButton" onClick={this.logout}>Logout</button>
-           :  <button className="authButton" onClick={this.login}>Login</button>
+           :  <span></span>
           }
           </div>
         </div>

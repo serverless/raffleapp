@@ -13,6 +13,7 @@
   flex-grow: 1;
 }
 .raffleDetails {
+  position: relative;
   width: 780px;
   padding: 5rem 8rem;
   border-radius: 10.8333px;
@@ -40,6 +41,18 @@
   font-weight: 100;
   min-height: 20px;
   letter-spacing: 1px;
+  line-height: 1.5;
+}
+
+.raffleOdds {
+  margin-top: 30px;
+}
+.enteredText {
+  position: absolute;
+  top: -70px;
+  left: 0px;
+  width: 100%;
+  text-align: center;
 }
 
 .raffleButtonWrapper {

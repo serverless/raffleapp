@@ -94,15 +94,9 @@ class ShowRaffle extends Component {
         </Button>
       )
     }
-
-    if (isRegistered) {
-      return (
-        <div>You are entered into the raffle</div>
-      )
-    }
   }
   showRaffle() {
-    const { name, entries, description, show404 } = this.state
+    const { name, entries, description, show404, isRegistered } = this.state
     const showName = name || '...'
     const entrantsCount = (entries) ? entries.length : 0
 
@@ -117,8 +111,8 @@ class ShowRaffle extends Component {
     let entrantsRender
     if (entrantsCount) {
       entrantsRender = (
-        <div className="raffleEntrants">
-          You have a 1 in {entrantsCount} chance of winning
+        <div className="raffleOdds">
+          You have a 1 out of {entrantsCount} chance of winning
         </div>
       )
     }
@@ -131,10 +125,19 @@ class ShowRaffle extends Component {
         </div>
       )
     }
+    let registeredRender
+    if (isRegistered) {
+      registeredRender = (
+        <h1 className="enteredText">
+          🎉 You are entered into this raffle 🎉
+        </h1>
+      )
+    }
 
     return (
       <div className='raffleDetails'>
         <div className='raffleDetailsInner'>
+          {registeredRender}
           <h1>
             Raffle {showName}
           </h1>

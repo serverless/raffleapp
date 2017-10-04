@@ -22,6 +22,7 @@ export default class Auth {
   login(isRaffle) {
     localStorage.setItem('last_page', window.location.pathname)
     const wasRaffle = (isRaffle) ? JSON.stringify(true) : JSON.stringify(false)
+    console.log('wasRaffle', wasRaffle)
     localStorage.setItem('last_page_was_raffle', wasRaffle)
     this.auth0.authorize();
   }
@@ -33,7 +34,10 @@ export default class Auth {
         const lastPage = localStorage.getItem('last_page')
         const lastPageWasRaffle = localStorage.getItem('last_page_was_raffle')
         if (lastPage) {
-          const params = (lastPageWasRaffle) ? '?register=true' : ''
+          let params = ''
+          if (lastPageWasRaffle && JSON.parse(lastPageWasRaffle) === true) {
+            params = '?register=true'
+          }
           return history.replace(`${lastPage}${params}`)
         }
         history.replace('/');
