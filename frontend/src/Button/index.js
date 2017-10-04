@@ -6,8 +6,9 @@ export default class Button extends Component {
     super(props)
   }
   render () {
+
     return (
-      <button onClick={this.props.onClick} className="button">
+      <button onClick={this.props.onClick} className="button" {...this.props}>
         {this.props.children}
       </button>
     )

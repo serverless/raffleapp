@@ -1,19 +1,19 @@
-import React from 'react';
-import { Route, Router, Switch, Redirect } from 'react-router-dom';
-import App from './App';
-import Home from './Home/Home';
-import Create from './Create';
-import Callback from './Callback/Callback';
-import ShowRaffle from './ShowRaffle/index';
+import React from 'react'
+import { Route, Router, Switch, Redirect } from 'react-router-dom'
+import App from './App'
+import Home from './Home/Home'
+import Create from './Create'
+import Callback from './Callback/Callback'
+import ShowRaffle from './ShowRaffle/index'
 import PickWinner from './PickWinner'
-import Auth from './Auth/Auth';
-import history from './history';
+import Auth from './Auth/Auth'
+import history from './history'
 
-const auth = new Auth();
+const auth = new Auth()
 
 const handleAuthentication = (nextState, replace) => {
   if (/access_token|id_token|error/.test(nextState.location.hash)) {
-    auth.handleAuthentication();
+    auth.handleAuthentication()
   }
 }
 

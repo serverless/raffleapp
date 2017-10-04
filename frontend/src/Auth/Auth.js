@@ -19,8 +19,10 @@ export default class Auth {
     this.isAuthenticated = this.isAuthenticated.bind(this);
   }
 
-  login() {
+  login(isRaffle) {
     localStorage.setItem('last_page', window.location.pathname)
+    const wasRaffle = (isRaffle) ? JSON.stringify(true) : JSON.stringify(false)
+    localStorage.setItem('last_page_was_raffle', wasRaffle)
     this.auth0.authorize();
   }
 
@@ -28,9 +30,11 @@ export default class Auth {
     this.auth0.parseHash((err, authResult) => {
       if (authResult && authResult.accessToken && authResult.idToken) {
         this.setSession(authResult);
-        const lastPast = localStorage.getItem('last_page')
-        if (lastPast) {
-          return history.replace(lastPast)
+        const lastPage = localStorage.getItem('last_page')
+        const lastPageWasRaffle = localStorage.getItem('last_page_was_raffle')
+        if (lastPage) {
+          const params = (lastPageWasRaffle) ? '?register=true' : ''
+          return history.replace(`${lastPage}${params}`)
         }
         history.replace('/');
       } else if (err) {

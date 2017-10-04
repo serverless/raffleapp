@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import queryString from 'query-string'
 import { Link } from 'react-router-dom'
 import Button from '../Button'
 import { SITE_CONFIG } from './../config'
@@ -22,7 +23,13 @@ class ShowRaffle extends Component {
       authed: props.auth.isAuthenticated()
     }
   }
+  handleRegister = () => {
+    this.props.auth.login(true)
+  }
   componentDidMount() {
+    const parsed = queryString.parse(location.search);
+    console.log(parsed);
+
     const shortcode = this.props.match.params.shortcode;
     instance.get(`${shortcode}`)
       .then(res => {
@@ -32,8 +39,13 @@ class ShowRaffle extends Component {
           ...raffle,
           loading: false
         })
+        const node = document.getElementById('register')
+        if (parsed.register && node) {
+          node.click()
+        }
       })
       .catch(error => {
+        console.log(error)
         if (error.response.status === 404) {
           this.setState({
             show404: true,
@@ -69,7 +81,7 @@ class ShowRaffle extends Component {
 
     if(!authed) {
       return (
-        <Button onClick={auth.login}>
+        <Button onClick={this.handleRegister}>
          Enter Raffle
         </Button>
       )
@@ -77,9 +89,15 @@ class ShowRaffle extends Component {
 
     if (isRegistered === false) {
       return (
-        <Button onClick={this.enterRaffle}>
+        <Button id="register" onClick={this.enterRaffle}>
           Enter Raffle
         </Button>
+      )
+    }
+
+    if (isRegistered) {
+      return (
+        <div>You are entered into the raffle</div>
       )
     }
   }
