@@ -5,6 +5,7 @@ import Home from './Home/Home';
 import Create from './Create';
 import Callback from './Callback/Callback';
 import ShowRaffle from './ShowRaffle/index';
+import PickWinner from './PickWinner'
 import Auth from './Auth/Auth';
 import history from './history';
 
@@ -19,6 +20,14 @@ const handleAuthentication = (nextState, replace) => {
 export const makeMainRoutes = () => {
   const homeRedirect = <Redirect to="/" />
   const create = (props) => !auth.isAuthenticated() ? homeRedirect : <Create {...props} />
+  const runRaffle = (props) => !auth.isAuthenticated() ? homeRedirect : <PickWinner auth={auth} {...props} />
+  // https://raffle.serverlessteam.com/%3Cshortcode%3E/entries
+  // https://raffle.serverlessteam.com/<shortcode>/winner
+  /*
+  {
+      "winner": "david@serverless.com",
+  }
+   */
   return (
       <Router history={history} component={App}>
         <div className="app-contents">
@@ -30,7 +39,8 @@ export const makeMainRoutes = () => {
               handleAuthentication(props);
               return <Callback {...props} />
             }}/>
-            <Route path="/:shortcode" render={(props) => <ShowRaffle auth={auth} {...props} />} />
+            <Route path="/:shortcode" exact render={(props) => <ShowRaffle auth={auth} {...props} />} />
+            <Route path="/:shortcode/raffle" render={runRaffle} />
           </Switch>
         </div>
       </Router>

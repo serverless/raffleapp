@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Button from '../Button'
 import { SITE_CONFIG } from './../config';
+import styles from './styles.css'
 
 
 const instance = axios.create({
@@ -14,7 +16,9 @@ class ShowRaffle extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      loading: true
+    }
   }
   componentDidMount() {
     const shortcode = this.props.match.params.shortcode;
@@ -22,12 +26,16 @@ class ShowRaffle extends Component {
       .then(res => {
         console.log(res.data)
         const raffle = res.data;
-        this.setState(raffle)
+        this.setState({
+          ...raffle,
+          loading: false
+        })
       })
       .catch(error => {
         if (error.response.status === 404) {
           this.setState({
-            exists: false,
+            show404: true,
+            loading: false
           })
         }
       })
@@ -59,52 +67,50 @@ class ShowRaffle extends Component {
 
     if(!auth.isAuthenticated()) {
       return (
-        <button onClick={auth.login}>
-          Login and Register
-        </button>
+        <Button onClick={auth.login}>
+          Login and Enter Raffle
+        </Button>
       )
     }
 
     if (isRegistered === false) {
       return (
-        <button onClick={this.enterRaffle}>
-          Register
-        </button>
+        <Button onClick={this.enterRaffle}>
+          Enter Raffle
+        </Button>
       )
     }
   }
   showRaffle() {
-    console.log(this.state)
-    if (this.state.exists !== false) {
-      return (
-        <div>
-          <h3>Raffle Details:</h3>
-          <ul>
-            <li>Name: {this.state.name}</li>
-            <li>Shortcode: {this.state.shortcode}</li>
-            <li>Created at: {this.state.created_at}</li>
-            <li>Are you registered: { (this.state.isRegistered) ? 'Yes' : 'No' } </li>
-            <li>Are you an admin: { (this.state.admin) ? 'Yes' : 'No' }</li>
-          </ul>
-        </div>
-      )
-    } else {
+    const { name, entries } = this.state
+    const showName = name || '...'
+    if (this.state.show404) {
       return (
         <div>
           <h3>Raffle does not exist.</h3>
         </div>
       )
     }
+    const length = (entries) ? entries.length : 0
+    return (
+      <div className='raffleDetails'>
+        <h1>
+          Raffle {showName}
+        </h1>
+        <div className="raffleMeta">
+           Created at: {this.state.createdAt} | Entrants {length}
+        </div>
+        <div className="raffleButtonWrapper" >
+          {this.registerButton()}
+        </div>
+      </div>
+    )
   }
   render() {
+
     return (
-      <div className="content">
-          <h2>
-          You're using raffle {this.props.match.params.shortcode}!
-          </h2>
-          { this.showRaffle() }
-          { this.registerButton() }
-          <div>Run raffle(admin)</div>
+      <div className="raffleWrapper">
+          {this.showRaffle()}
       </div>
     );
   }

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom'
-import styles from './styles.css'
+import Button from '../Button'
+import styles from './styles.css' // eslint-disable-line
 import { SITE_CONFIG } from './../config';
 
 
@@ -50,7 +51,7 @@ class Home extends Component {
                 <Link to={`/${raffle.shortcode}`}>{raffle.name}</Link>
               </div>
               <span>{raffle.createdAt}</span>
-              <div>Winner: Steve</div>
+              <div>Winner: {raffle.winner}</div>
               <div>share link: http:blah{raffle.shortcode}</div>
             </div>
           )}
@@ -70,7 +71,7 @@ class Home extends Component {
           <div className="contents">
             <h1>Serverless Raffles</h1>
             <p>The 100% serverless raffle app for picking the winners!</p>
-            <a className="landing-button">Clone the repo</a>
+            <Button>Clone the repo</Button>
           </div>
         </div>
       );

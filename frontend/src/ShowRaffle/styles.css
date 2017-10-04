@@ -1,0 +1,31 @@
+.raffleWrapper {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.raffleDetails {
+  width: 780px;
+  padding: 5rem 8rem;
+  border-radius: 10.8333px;
+  background-position: 0% 0%;
+  background-repeat: repeat;
+  background-size: cover;
+  background-image: linear-gradient(-188deg, #f26c4e 0%, #f24f48 100%);
+  box-shadow: 0rem 1.125rem 4.125rem 0rem rgba(0,0,0,0.451);
+  border-radius: 0.625rem 0.625rem 0.625rem 0.625rem;
+  transition: opacity 0.75s ease 0.125s,transform 0.75s ease 0.125s;
+  color: #FFFFFF;
+}
+.raffleDetails h1 {
+  letter-spacing: -0.05rem;
+  width: 100%;
+  font-size: 2.25em;
+  line-height: 1.25;
+  font-weight: 400;
+}
+.raffleButtonWrapper {
+  font-size: 21.6667px;
+  margin-top: 20px;
+}
