@@ -32,6 +32,7 @@ Create a new raffle shortcode
 JSON object:
 
 - `name` - `string` - required; Name of Raffle (e.g. _Serverless Meetup SF October 2017_).
+- `description` - `string` - required; Description of Raffle.
 - `admins` - `array` - optional; Additional list of email addresses to serve as admins for this raffle (i.e., meetup organizers outside of Serverless, Inc.)
 
 ##### Response
@@ -68,6 +69,7 @@ Array of JSON objects:
 
 - `shortcode` - `string` - Shortcode identifier for the raffle
 - `name` - `string` - The name of the raffle
+- `description` - `string` - The description of the raffle
 - `createdAt` - `ISO8601 timestamp` - Time the raffle was created
 - `winner` - `string` - Winner of the raffle, if there is one.
 
@@ -90,6 +92,7 @@ JSON response:
 
 - `shortcode` - `string` - Shortcode identifier for the raffle
 - `name` - `string` - The name of the raffle
+- `description` - `string` - The description of the raffle
 - `createdAt` - `ISO8601 timestamp` - Time the raffle was created
 - `winner` - `string` - Winner of the raffle, if there is one.
 - `registered` - `boolean` - Whether the current user is registered for this raffle.

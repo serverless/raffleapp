@@ -42,6 +42,7 @@ def handler(event, context):
 
     body = json.loads(event.get('body'))
     name = body.get('name')
+    description = body.get('description')
 
     if not name:
         return {
@@ -52,11 +53,20 @@ def handler(event, context):
             },
             "body": json.dumps({"error": "Request body must include a 'name' key"})
         }
+    if not description:
+        return {
+            "statusCode": 400,
+            "headers": {
+                "Access-Control-Allow-Origin" : "*",
+                "Access-Control-Allow-Credentials" : True
+            },
+            "body": json.dumps({"error": "Request body must include a 'description' key"})
+        }
 
     admins = body.get('admins', [])
 
     try:
-        shortcode = db.create_raffle(name, admins)
+        shortcode = db.create_raffle(name, description, admins)
     except Exception as e:
         logger.exception(e)
         return {
@@ -76,7 +86,8 @@ def handler(event, context):
         },
         "body": json.dumps({
             'shortcode': shortcode,
-            'name': name
+            'name': name,
+            'description': description
         })
     }
 
