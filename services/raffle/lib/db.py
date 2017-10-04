@@ -23,7 +23,7 @@ class RaffleHasWinner(Exception):
     pass
 
 
-def create_raffle(name, admins, client=CLIENT):
+def create_raffle(name, description, admins, client=CLIENT):
     shortcode = generate_shortcode()
     dt = datetime.datetime.now().isoformat()
 
@@ -32,6 +32,7 @@ def create_raffle(name, admins, client=CLIENT):
         Item={
             'shortcode': {'S': shortcode},
             'name': {'S': name},
+            'description': {'S': description},
             'created_at': {'S': dt},
             'admins': {'SS': admins}
         },
@@ -46,6 +47,7 @@ def clean_item(item):
     return {
       'createdAt': item.get('created_at').get('S'),
       'name': item.get('name').get('S'),
+      'description': item.get('description', {}).get('S'),
       'shortcode': item.get('shortcode').get('S'),
       'winner': item.get('winner', {}).get('S'),
     }
@@ -88,6 +90,7 @@ def get_raffle(shortcode, email, client=CLIENT):
         raffle['admin'] = True
 
     raffle['name'] = item.get('name').get('S')
+    raffle['description'] = item.get('description', {}).get('S')
     raffle['createdAt'] = item.get('created_at').get('S')
     raffle['winner'] = item.get('winner', {}).get('S')
     raffle['isRegistered'] = False
