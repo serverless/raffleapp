@@ -18,6 +18,7 @@ class Home extends Component {
     super(props);
 
     this.state = {
+      loading: false,
       raffles: [],
       search: ''
     };
@@ -38,23 +39,62 @@ class Home extends Component {
       search: event.target.value
     })
   }
+  handleFocus = (event) => {
+    event.target.select()
+  }
   renderRaffles() {
     const { raffles, search } = this.state
     if (raffles.length) {
+      const raffleItems = raffles.filter((item) => {
+          return item.name.toLowerCase().indexOf(search) > -1 || item.name.indexOf(search) > -1
+        }).map((raffle, i) => {
+          const actualDate = new Date(raffle.createdAt)
+          const dateString = actualDate.toDateString()
+          const prettyDate = dateString.split(" ").filter((element, index) => {
+            return index > 0
+          }).join(" ")
+          let winnerRender
+          if (raffle.winner) {
+            winnerRender = (
+              <div className="raffleItemWinner">
+                Winner: {raffle.winner}
+              </div>
+            )
+          }
+          return (
+            <div key={i} className='zebra'>
+
+                <div className="raffleItem">
+                  <div>
+                    <Link to={`/${raffle.shortcode}`}>
+                    <div className="raffleItemName">
+                      {raffle.name}
+                    </div>
+                    </Link>
+                    <div className="raffleItemDate">
+                      created {prettyDate}
+                    </div>
+                  </div>
+
+                  <div className='getLinkWrapper'>
+                    Share link: <input
+                      className='getLink'
+                      type='readonly'
+                      readOnly
+                      onFocus={this.handleFocus}
+                      value={`${window.location.origin}/${raffle.shortcode}`}
+                    />
+                  </div>
+
+                  {winnerRender}
+                </div>
+           </div>
+        )
+      })
+
       return (
         <div className="raffleList">
-          { raffles.filter((item) => {
-              return item.name.toLowerCase().indexOf(search) > -1 || item.name.indexOf(search) > -1
-            }).map((raffle, i) =>
-            <div className="raffleItem" key={i}>
-              <div>
-                <Link to={`/${raffle.shortcode}`}>{raffle.name}</Link>
-              </div>
-              <span>{raffle.createdAt}</span>
-              <div>Winner: {raffle.winner}</div>
-              <div>share link: http:blah{raffle.shortcode}</div>
-            </div>
-          )}
+          {raffleItems}
         </div>
       )
     } else {
@@ -71,13 +111,13 @@ class Home extends Component {
           <div className="contents">
             <h1>Serverless Raffles</h1>
             <p>The 100% serverless raffle app for picking the winners!</p>
-            <Button>Clone the repo</Button>
+            <Button href="link-to-repo">Clone the repo</Button>
           </div>
         </div>
-      );
+      )
     }
     return (
-      <div className="content">
+      <div className="raffle-admin">
         <div className="actions">
           <div className="searchWrapper">
             <input

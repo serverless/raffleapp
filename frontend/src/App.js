@@ -39,9 +39,6 @@ class App extends Component {
           <div className="logoText">
             <img alt="Serverless" src="https://s3-us-west-2.amazonaws.com/assets.site.serverless.com/logos/serverless_text_white.svg"/>
           </div>
-          <div className="nav-email">
-            <p>alex@serverless.com</p>
-          </div>
           <div className="right-nav">
           { isAuthenticated()
            ? <button className="authButton" onClick={this.logout}>Logout</button>

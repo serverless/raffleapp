@@ -1,20 +1,29 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import axios from 'axios';
 import { Link } from 'react-router-dom'
-import { SITE_CONFIG } from './../config';
+import { SITE_CONFIG } from './../config'
+import styles from './styles.css'
+
+const noOp = () => {}
 
 export default class Create extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      loading: false,
       success: false
     }
   }
   createRaffle = (e) => {
     e.preventDefault()
     const name = this.refs.name.value
+    const description = this.refs.description.value
     let admins = this.refs.admins.value
+
+    this.setState({
+      loading: true
+    })
 
     if (!name || !admins) {
       return alert('please add name or admins')
@@ -27,6 +36,7 @@ export default class Create extends Component {
       method: 'post',
       data: {
         name: name,
+        description: description,
         admins: admins
       },
       headers: {
@@ -35,39 +45,55 @@ export default class Create extends Component {
     }).then((x) => {
       console.log('x', x)
       this.setState({
-        success: true
+        success: true,
+        loading: false
       }, () => {
         this.refs.name.value = ''
+        this.refs.description.value = ''
         this.refs.admins.value = ''
       })
     }).catch((e) => {
       console.log(e)
+      this.setState({
+        error: e.message,
+        loading: false
+      })
     })
   }
   render() {
-    const { success } = this.state
-
+    const { success, loading } = this.state
+    const handler = (loading) ? noOp : this.createRaffle
     let successMsg
-
-    if(success) {
+    if (success) {
       successMsg = (
-        <div>Raffle Created!</div>
+        <div className="created-success">Raffle Created!</div>
       )
     }
-
     return (
       <div className="content">
-        <Link to="/">Back to list</Link>
-        {successMsg}
-        <form onSubmit={this.createRaffle}>
-          <div>
-            <input placeholder="Name of raffle" name='name' ref='name'></input>
-          </div>
-          <div>
-            <input placeholder="raffle admins" name='admins' ref='admins'></input>
-          </div>
-          <button>Create New Raffle</button>
-        </form>
+        <Link to="/">Back to Raffle list</Link>
+
+        <div className='create'>
+          <form onSubmit={handler}>
+            {successMsg}
+            <div className="field">
+              <label htmlFor="name">Name</label>
+              <input placeholder="Name of raffle" name='name' ref='name'></input>
+            </div>
+            <div className="field">
+              <label htmlFor="description">Description</label>
+              <textarea placeholder="Description of raffle" name='description' ref='description'></textarea>
+            </div>
+            <div className="field">
+              <label htmlFor="admins">Admin emails</label>
+              <input placeholder="raffle admins" name='admins' ref='admins'></input>
+            </div>
+            <div className="field">
+              <button>Create New Raffle</button>
+            </div>
+          </form>
+        </div>
+
       </div>
     );
   }

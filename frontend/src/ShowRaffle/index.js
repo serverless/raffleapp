@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
-import axios from 'axios';
+import React, { Component } from 'react'
+import axios from 'axios'
+import { Link } from 'react-router-dom'
 import Button from '../Button'
-import { SITE_CONFIG } from './../config';
+import { SITE_CONFIG } from './../config'
 import styles from './styles.css'
 
 
@@ -17,7 +18,8 @@ class ShowRaffle extends Component {
     super(props);
 
     this.state = {
-      loading: true
+      loading: true,
+      authed: props.auth.isAuthenticated()
     }
   }
   componentDidMount() {
@@ -63,12 +65,12 @@ class ShowRaffle extends Component {
   }
   registerButton() {
     const { auth } = this.props
-    const { isRegistered } = this.state
+    const { isRegistered, authed } = this.state
 
-    if(!auth.isAuthenticated()) {
+    if(!authed) {
       return (
         <Button onClick={auth.login}>
-          Login and Enter Raffle
+         Enter Raffle
         </Button>
       )
     }
@@ -82,35 +84,70 @@ class ShowRaffle extends Component {
     }
   }
   showRaffle() {
-    const { name, entries } = this.state
+    const { name, entries, description, show404 } = this.state
     const showName = name || '...'
-    if (this.state.show404) {
+    const entrantsCount = (entries) ? entries.length : 0
+
+    if (show404) {
       return (
         <div>
           <h3>Raffle does not exist.</h3>
         </div>
       )
     }
-    const length = (entries) ? entries.length : 0
+
+    let entrantsRender
+    if (entrantsCount) {
+      entrantsRender = (
+        <div className="raffleEntrants">
+          You have a 1 in {entrantsCount} chance of winning
+        </div>
+      )
+    }
+
+    let descriptionRender
+    if (description) {
+      descriptionRender = (
+        <div className="raffleDescription">
+          {description}
+        </div>
+      )
+    }
+
     return (
       <div className='raffleDetails'>
-        <h1>
-          Raffle {showName}
-        </h1>
-        <div className="raffleMeta">
-           Created at: {this.state.createdAt} | Entrants {length}
+        <div className='raffleDetailsInner'>
+          <h1>
+            Raffle {showName}
+          </h1>
+          <div className="raffleMeta">
+            {descriptionRender}
+            {entrantsRender}
+          </div>
         </div>
-        <div className="raffleButtonWrapper" >
+        <div className="raffleButtonWrapper">
           {this.registerButton()}
         </div>
       </div>
     )
   }
   render() {
-
+    const { match } = this.props
+    const { authed } = this.state
+    let extra
+    if (authed) {
+      extra = (
+        <div className="runRaffle">
+          <Link to={`/${match.params.shortcode}/raffle`}>
+            Pick a winner!
+          </Link>
+        </div>
+      )
+    }
     return (
       <div className="raffleWrapper">
-          {this.showRaffle()}
+        {this.showRaffle()}
+        {extra}
       </div>
     );
   }

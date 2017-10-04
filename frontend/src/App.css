@@ -59,8 +59,13 @@ body {
 }
 
 .logoText {
-  width: 97px;
   margin-left: 0px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.logoText img {
+  width: 97px;
 }
 
 .authButton {

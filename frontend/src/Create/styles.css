@@ -1,0 +1,51 @@
+.create form {
+  max-width: 450px;
+  position: relative;
+}
+.create .field {
+  padding: 1.5rem 0 0 1.5rem;
+}
+.create label {
+  display: block;
+  font-family: "Source Sans Pro", Helvetica, sans-serif;
+  font-weight: 900;
+  line-height: 1.5;
+  letter-spacing: 1px;
+  font-size: 14px;
+  margin: 0 0 0.75rem 0;
+}
+.create input {
+  height: 50px;
+}
+.create input, .create textarea {
+  appearance: none;
+  background: transparent;
+  border: solid 2px #e2e2e2;
+  color: inherit;
+  display: block;
+  outline: 0;
+  padding: 0 1rem;
+  text-decoration: none;
+  width: 100%;
+}
+.create textarea {
+  min-height: 80px;
+  padding: 1rem;
+}
+.create input:focus, .create textarea:focus  {
+  border-color: #FD5750;
+}
+.create button {
+  margin-bottom: 30px;
+}
+.created-success {
+  position: absolute;
+  color: green;
+  left: 0px;
+  top: 0px;
+  /* height: 100%; */
+  width: 100%;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
