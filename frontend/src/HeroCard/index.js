@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import styles from './styles.css'
+import styles from './styles.css' // eslint-disable-line
 
 export default class HeroCard extends Component {
   render() {

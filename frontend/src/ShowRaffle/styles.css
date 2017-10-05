@@ -8,6 +8,7 @@
   width: 100%;
   text-align: center;
 }
+
 .raffleButtonWrapper {
   font-size: 21.6667px;
   margin-top: 35px;
@@ -17,7 +18,18 @@
   margin-top: 30px;
   color: #fff;
   text-align: center;
+  order: 2;
 }
 .runRaffle a {
   text-decoration: none;
+}
+
+@media (max-width: 800px) {
+  .enteredText {
+    position: static;
+    width: 100%;
+    text-align: center;
+    font-size: 22px;
+    order: 1;
+  }
 }

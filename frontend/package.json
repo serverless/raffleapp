@@ -9,7 +9,6 @@
     "auth0-js": "^8.8.0",
     "axios": "^0.16.2",
     "bootstrap": "^3.3.7",
-    "query-string": "^5.0.0",
     "react": "^15.5.4",
     "react-bootstrap": "^0.31.0",
     "react-dom": "^15.5.4",

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios';
 import { Link } from 'react-router-dom'
 import { SITE_CONFIG } from './../config'
-import styles from './styles.css'
+import styles from './styles.css' // eslint-disable-line
 
 const noOp = () => {}
 

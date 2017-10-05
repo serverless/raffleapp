@@ -73,3 +73,9 @@
   align-content: center;
   justify-content: center;
 }
+
+@media (max-width: 800px) {
+  .create .field {
+    padding-left: 0;
+  }
+}

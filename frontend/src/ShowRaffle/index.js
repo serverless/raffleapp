@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import queryString from 'query-string'
 import { Link } from 'react-router-dom'
 import Button from '../Button'
 import { SITE_CONFIG } from './../config'
-import styles from './styles.css'
+import styles from './styles.css' // eslint-disable-line
 import HeroCard from '../HeroCard'
 
 const instance = axios.create({
@@ -24,11 +23,11 @@ class ShowRaffle extends Component {
     }
   }
   handleRegister = () => {
-    this.props.auth.login(true)
+    localStorage.setItem('raffle_sign_up', 'true')
+    this.props.auth.login()
   }
   componentDidMount() {
-    const parsed = queryString.parse(location.search)
-    const shortcode = this.props.match.params.shortcode;
+    const shortcode = this.props.match.params.shortcode
     instance.get(`${shortcode}`)
       .then(res => {
         console.log(res.data)
@@ -37,12 +36,12 @@ class ShowRaffle extends Component {
           ...raffle,
           loading: false
         })
+        const oneClickSignup = JSON.parse(localStorage.getItem('raffle_sign_up'))
         const node = document.getElementById('register')
-        if (parsed.register && node) {
+        if (oneClickSignup && node) {
           node.click()
         }
-      })
-      .catch(error => {
+      }).catch((error) => {
         console.log(error)
         if (error.response.status === 404) {
           this.setState({
@@ -55,6 +54,8 @@ class ShowRaffle extends Component {
   enterRaffle = () => {
     const id = this.props.match.params.shortcode
     const url = `https://raffle.serverlessteam.com/${id}/register`
+    // reset one click signup
+    localStorage.setItem('raffle_sign_up', 'false')
     axios({
       url: url,
       method: 'post',
@@ -62,7 +63,9 @@ class ShowRaffle extends Component {
         'Authorization': SITE_CONFIG.auth
       }
     }).then((response) => {
-      console.log(response)
+      console.log(response.data)
+      // reset one click signup
+      localStorage.setItem('raffle_sign_up', 'false')
       this.setState({
         isRegistered: true
       })
@@ -74,7 +77,6 @@ class ShowRaffle extends Component {
     })
   }
   renderActions() {
-    const { auth } = this.props
     const { isRegistered, authed } = this.state
 
     if (isRegistered) {

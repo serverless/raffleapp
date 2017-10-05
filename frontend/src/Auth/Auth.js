@@ -13,17 +13,15 @@ export default class Auth {
   });
 
   constructor() {
-    this.login = this.login.bind(this);
-    this.logout = this.logout.bind(this);
-    this.handleAuthentication = this.handleAuthentication.bind(this);
+    this.login = this.login.bind(this)
+    this.logout = this.logout.bind(this)
+    this.handleAuthentication = this.handleAuthentication.bind(this)
     this.isAuthenticated = this.isAuthenticated.bind(this)
   }
 
-  login(isRaffle) {
+  login() {
     localStorage.setItem('last_page', window.location.pathname)
-    const wasRaffle = (isRaffle) ? JSON.stringify(true) : JSON.stringify(false)
-    localStorage.setItem('last_page_was_raffle', wasRaffle)
-    this.auth0.authorize();
+    this.auth0.authorize()
   }
 
   handleAuthentication() {
@@ -31,13 +29,8 @@ export default class Auth {
       if (authResult && authResult.accessToken && authResult.idToken) {
         this.setSession(authResult);
         const lastPage = localStorage.getItem('last_page')
-        const lastPageWasRaffle = localStorage.getItem('last_page_was_raffle')
         if (lastPage) {
-          let params = ''
-          if (lastPageWasRaffle && JSON.parse(lastPageWasRaffle) === true) {
-            params = '?register=true'
-          }
-          return history.replace(`${lastPage}${params}`)
+          return history.replace(`${lastPage}`)
         }
         history.replace('/');
       } else if (err) {

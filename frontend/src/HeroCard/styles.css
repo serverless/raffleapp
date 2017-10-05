@@ -57,3 +57,22 @@
   margin-top: 35px;
   margin-left: -10px;
 }
+
+
+@media (max-width: 800px) {
+  .heroCardWrapper {
+    justify-content: flex-start;
+  }
+  .heroCardOuter {
+    display: flex;
+    flex-direction: column;
+  }
+  .heroCardOuter, .heroCard {
+    width: 100%;
+    border-radius: 0px;
+  }
+  .heroCard {
+    padding: 2rem 4rem;
+    padding-bottom: 4rem;
+  }
+}

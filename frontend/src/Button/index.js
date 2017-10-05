@@ -1,16 +1,12 @@
-import React, {Component, PropTypes} from 'react'
-import styles from './styles.css'
+import React from 'react'
+import styles from './styles.css' // eslint-disable-line
 
-export default class Button extends Component {
-  constructor (props) {
-    super(props)
-  }
-  render () {
-
-    return (
-      <button onClick={this.props.onClick} className="button" {...this.props}>
-        {this.props.children}
-      </button>
-    )
-  }
+const Button = (props) => {
+  return (
+    <button onClick={props.onClick} className="button" {...props}>
+      {props.children}
+    </button>
+  )
 }
+
+export default Button
