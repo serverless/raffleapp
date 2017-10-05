@@ -17,15 +17,12 @@ class App extends Component {
 
   render() {
     const { isAuthenticated } = this.props.auth;
-    let navLink = <img alt="Serverless logo" src="https://s3-us-west-2.amazonaws.com/assets.site.serverless.com/logos/serverless-logo.svg"/>
+    const navLink = (
+      <Link to='/'>
+        <img alt="Serverless logo" src="https://s3-us-west-2.amazonaws.com/assets.site.serverless.com/logos/serverless-logo.svg"/>
+      </Link>
+    )
 
-    // if(isAuthenticated()) {
-      navLink = (
-        <Link to='/'>
-          <img alt="Serverless logo" src="https://s3-us-west-2.amazonaws.com/assets.site.serverless.com/logos/serverless-logo.svg"/>
-        </Link>
-      )
-    // }
 
     return (
       <div className="App">

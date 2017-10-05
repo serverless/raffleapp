@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import Button from '../Button'
 import { SITE_CONFIG } from './../config'
 import styles from './styles.css'
-
+import HeroCard from '../HeroCard'
 
 const instance = axios.create({
   baseURL: SITE_CONFIG.raffleDomain,
@@ -27,9 +27,7 @@ class ShowRaffle extends Component {
     this.props.auth.login(true)
   }
   componentDidMount() {
-    const parsed = queryString.parse(location.search);
-    console.log(parsed);
-
+    const parsed = queryString.parse(location.search)
     const shortcode = this.props.match.params.shortcode;
     instance.get(`${shortcode}`)
       .then(res => {
@@ -75,9 +73,13 @@ class ShowRaffle extends Component {
       // })
     })
   }
-  registerButton() {
+  renderActions() {
     const { auth } = this.props
     const { isRegistered, authed } = this.state
+
+    if (isRegistered) {
+      return null
+    }
 
     if(!authed) {
       return (
@@ -95,15 +97,36 @@ class ShowRaffle extends Component {
       )
     }
   }
-  showRaffle() {
-    const { name, entries, description, show404, isRegistered } = this.state
+  render() {
+    const { name, entries, description, show404, isRegistered, authed } = this.state
+    const { match } = this.props
     const showName = name || '...'
     const entrantsCount = (entries) ? entries.length : 0
-
     if (show404) {
       return (
-        <div>
-          <h3>Raffle does not exist.</h3>
+        <HeroCard
+          title={'This raffle does not exist'}
+          description={'Please refresh the page and try again'}
+        />
+      )
+    }
+
+    let beforeContent
+    if (isRegistered) {
+      beforeContent = (
+        <h1 className="enteredText">
+          🎉 You are entered into this raffle 🎉
+        </h1>
+      )
+    }
+
+    let afterContent
+    if (authed) {
+      afterContent = (
+        <div className="runRaffle">
+          <Link to={`/${match.params.shortcode}/raffle`}>
+            Pick a winner!
+          </Link>
         </div>
       )
     }
@@ -117,60 +140,22 @@ class ShowRaffle extends Component {
       )
     }
 
-    let descriptionRender
-    if (description) {
-      descriptionRender = (
-        <div className="raffleDescription">
-          {description}
-        </div>
-      )
-    }
-    let registeredRender
-    if (isRegistered) {
-      registeredRender = (
-        <h1 className="enteredText">
-          🎉 You are entered into this raffle 🎉
-        </h1>
-      )
-    }
-
-    return (
-      <div className='raffleDetails'>
-        <div className='raffleDetailsInner'>
-          {registeredRender}
-          <h1>
-            Raffle {showName}
-          </h1>
-          <div className="raffleMeta">
-            {descriptionRender}
-            {entrantsRender}
-          </div>
-        </div>
-        <div className="raffleButtonWrapper">
-          {this.registerButton()}
-        </div>
+    let contents = (
+      <div>
+        {entrantsRender}
       </div>
     )
-  }
-  render() {
-    const { match } = this.props
-    const { authed } = this.state
-    let extra
-    if (authed) {
-      extra = (
-        <div className="runRaffle">
-          <Link to={`/${match.params.shortcode}/raffle`}>
-            Pick a winner!
-          </Link>
-        </div>
-      )
-    }
+
     return (
-      <div className="raffleWrapper">
-        {this.showRaffle()}
-        {extra}
-      </div>
-    );
+      <HeroCard
+        before={beforeContent}
+        title={showName}
+        description={description}
+        contents={contents}
+        actions={this.renderActions()}
+        after={afterContent}
+      />
+    )
   }
 }
 

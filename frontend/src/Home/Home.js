@@ -31,7 +31,7 @@ class Home extends Component {
         this.setState({ raffles })
       });
   }
-  login() {
+  login = () => {
     this.props.auth.login();
   }
   handleSearch = (event) => {
@@ -112,7 +112,7 @@ class Home extends Component {
             <h1>Serverless Raffles</h1>
             <p>The 100% serverless raffle app for picking the winners!</p>
             <Button href="link-to-repo">Clone the repo</Button>
-            <button className="authButton" onClick={this.logout}>Login</button>
+            <button className="authButton" onClick={this.login}>Login</button>
           </div>
         </div>
       )

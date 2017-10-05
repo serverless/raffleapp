@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom'
 import { SITE_CONFIG } from './../config';
+import HeroCard from '../HeroCard'
+import Button from '../Button'
 
 const colors = ['#c90000', '#c9c90e', '#336999', '#33996f']
 const skip = 4
@@ -93,6 +95,10 @@ export default class PickWinner extends Component {
       }, 7000)
     }).catch((e) => {
       console.log(e)
+      this.setState({
+        error: e.message,
+        loading: false,
+      })
     })
   }
   createRaffle = (e) => {
@@ -128,34 +134,36 @@ export default class PickWinner extends Component {
       console.log(e)
     })
   }
-  hammerTime() {
-    const { loading, winner } = this.state
-    const showLoading = (loading) ? 'block' : 'none'
-    const showWinner = (winner) ? 'block' : 'none'
-    return (
-      <div className='gif'>
-        <iframe style={{display: showWinner}} src="//giphy.com/embed/l3q2Z6S6n38zjPswo" width="330" height="248" frameBorder="0" className="giphy-embed" allowFullScreen></iframe>
-        <iframe style={{display: showLoading}}  src="//giphy.com/embed/hxc32veg6tbqg" width="330" height="248" frameBorder="0" className="giphy-embed" allowFullScreen></iframe>
-      </div>
-    )
-  }
   render() {
     const { match } = this.props
     const { loading, winner } = this.state
     const buttonText = (loading) ? "Calculating Winner..." : "Spin the wheel of destiny"
     const headline = (winner) ? winner : "Raffle"
 
-    return (
-      <div className="content">
-        <Link to={`/${match.params.shortcode}`}>Back to raffle</Link>
-        Pick the winner
-        <h1 className="title" ref='winner'>
+    const actions = (
+      <Button ref='button' onClick={this.doRaffle}>
+        {buttonText}
+      </Button>
+    )
+
+    const before = <Link to={`/${match.params.shortcode}`}>Back to raffle</Link>
+
+    const contents = (
+      <div>
+        <h2 className="title" ref='winner'>
           {headline}
-        </h1>
-        <button ref='button' onClick={this.doRaffle}>
-          {buttonText}
-        </button>
+        </h2>
       </div>
-    );
+    )
+
+    return (
+      <HeroCard
+        title={'Pick a winner'}
+        description={`It's time for a winner!`}
+        contents={contents}
+        before={before}
+        actions={actions}
+      />
+    )
   }
 }
