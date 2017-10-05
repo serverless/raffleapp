@@ -36,7 +36,31 @@
   border-color: #FD5750;
 }
 .create button {
+  margin-top: 10px;
   margin-bottom: 30px;
+  background-color: transparent;
+  box-shadow: inset 0 0 0 2px #717981;
+  color: #717981 !important;
+  appearance: none;
+  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
+  border: 0;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Source Sans Pro", Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.075em;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 25px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.create button:hover {
+  box-shadow: inset 0 0 0 2px #FD5750;
+  color: #FD5750 !important;
 }
 .created-success {
   position: absolute;

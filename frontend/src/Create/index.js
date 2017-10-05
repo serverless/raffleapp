@@ -15,6 +15,9 @@ export default class Create extends Component {
       success: false
     }
   }
+  componentDidMount() {
+    this.refs.name.focus()
+  }
   createRaffle = (e) => {
     e.preventDefault()
     const name = this.refs.name.value
@@ -84,15 +87,15 @@ export default class Create extends Component {
             {successMsg}
             <div className="field">
               <label htmlFor="name">Name</label>
-              <input placeholder="Name of raffle" name='name' ref='name'></input>
+              <input placeholder="Enter your raffle name here" name='name' ref='name'></input>
             </div>
             <div className="field">
               <label htmlFor="description">Description</label>
-              <textarea placeholder="Description of raffle" name='description' ref='description'></textarea>
+              <textarea placeholder="Description of raffle, prizes, etc." name='description' ref='description'></textarea>
             </div>
             <div className="field">
               <label htmlFor="admins">Admin emails</label>
-              <input placeholder="raffle admins" name='admins' ref='admins'></input>
+              <input placeholder="Enter raffle admin emails (comma separated values)" name='admins' ref='admins'></input>
             </div>
             <div className="field">
               <button>Create New Raffle</button>
