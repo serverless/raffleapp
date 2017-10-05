@@ -16,13 +16,12 @@ export default class Auth {
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.handleAuthentication = this.handleAuthentication.bind(this);
-    this.isAuthenticated = this.isAuthenticated.bind(this);
+    this.isAuthenticated = this.isAuthenticated.bind(this)
   }
 
   login(isRaffle) {
     localStorage.setItem('last_page', window.location.pathname)
     const wasRaffle = (isRaffle) ? JSON.stringify(true) : JSON.stringify(false)
-    console.log('wasRaffle', wasRaffle)
     localStorage.setItem('last_page_was_raffle', wasRaffle)
     this.auth0.authorize();
   }

@@ -42,11 +42,12 @@ export default class Create extends Component {
       headers: {
         'Authorization': SITE_CONFIG.auth
       }
-    }).then((x) => {
-      console.log('x', x)
+    }).then((response) => {
+      console.log('x', response)
       this.setState({
         success: true,
-        loading: false
+        loading: false,
+        raffle: response.data
       }, () => {
         this.refs.name.value = ''
         this.refs.description.value = ''
@@ -61,12 +62,17 @@ export default class Create extends Component {
     })
   }
   render() {
-    const { success, loading } = this.state
+    const { success, raffle, loading } = this.state
     const handler = (loading) ? noOp : this.createRaffle
     let successMsg
     if (success) {
       successMsg = (
-        <div className="created-success">Raffle Created!</div>
+        <div className="created-success">
+          Raffle Created!&nbsp;&nbsp;
+          <div>
+            <Link to={`/${raffle.shortcode}`}>View Raffle Page</Link>
+          </div>
+        </div>
       )
     }
     return (
