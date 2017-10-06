@@ -1,7 +1,6 @@
 
 let callbackUrl = 'http://localhost:3000/callback'
 if (process.env.NODE_ENV === 'production') {
-  console.log('process.env', process.env)
   // in netlify context. See http://bit.ly/2y86cil
   callbackUrl = 'https://serverless-raffle.netlify.com/callback'
 }
