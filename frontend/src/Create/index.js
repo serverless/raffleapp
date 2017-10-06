@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import { Link } from 'react-router-dom'
-import { SITE_CONFIG } from './../config'
 import styles from './styles.css' // eslint-disable-line
+import { getHeaders } from '../utils';
 
 const noOp = () => {}
 
@@ -42,9 +42,7 @@ export default class Create extends Component {
         description: description,
         admins: admins
       },
-      headers: {
-        'Authorization': SITE_CONFIG.auth
-      }
+      headers: getHeaders(),
     }).then((response) => {
       console.log('x', response)
       this.setState({

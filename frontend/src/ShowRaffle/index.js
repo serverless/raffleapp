@@ -2,16 +2,9 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 import Button from '../Button'
-import { SITE_CONFIG } from './../config'
 import styles from './styles.css' // eslint-disable-line
 import HeroCard from '../HeroCard'
-
-const instance = axios.create({
-  baseURL: SITE_CONFIG.raffleDomain,
-  headers: {
-    'Authorization': SITE_CONFIG.auth
-  }
-})
+import { getHeaders } from '../utils';
 
 class ShowRaffle extends Component {
   constructor(props) {
@@ -28,7 +21,10 @@ class ShowRaffle extends Component {
   }
   componentDidMount() {
     const shortcode = this.props.match.params.shortcode
-    instance.get(`${shortcode}`)
+    const config = {
+      headers: getHeaders(),
+    }
+    axios.get(`https://raffle.serverlessteam.com/${shortcode}`, config)
       .then(res => {
         console.log(res.data)
         const raffle = res.data;
@@ -59,9 +55,7 @@ class ShowRaffle extends Component {
     axios({
       url: url,
       method: 'post',
-      headers: {
-        'Authorization': SITE_CONFIG.auth
-      }
+      headers: getHeaders(),
     }).then((response) => {
       console.log(response.data)
       // reset one click signup

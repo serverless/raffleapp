@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom'
-import { SITE_CONFIG } from './../config';
 import HeroCard from '../HeroCard'
 import Button from '../Button'
+import { getHeaders } from '../utils';
 
 const colors = ['#c90000', '#c9c90e', '#336999', '#33996f']
 const skip = 4
@@ -61,9 +61,7 @@ export default class PickWinner extends Component {
     axios({
       method: 'get', // TODO needs to be post
       url: `https://raffle.serverlessteam.com/${match.params.shortcode}/entries`,
-      headers: {
-        'Authorization': SITE_CONFIG.auth
-      }
+      headers: getHeaders()
     }).then((response) => {
       console.log('response', response)
       const data = response.data
@@ -119,9 +117,7 @@ export default class PickWinner extends Component {
         name: name,
         admins: admins
       },
-      headers: {
-        'Authorization': SITE_CONFIG.auth
-      }
+      headers: getHeaders(),
     }).then((x) => {
       console.log('x', x)
       this.setState({

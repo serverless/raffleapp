@@ -3,15 +3,8 @@ import axios from 'axios';
 import { Link } from 'react-router-dom'
 import Button from '../Button'
 import styles from './styles.css' // eslint-disable-line
-import { SITE_CONFIG } from './../config';
+import { getHeaders } from './../utils';
 
-
-const instance = axios.create({
-  baseURL: SITE_CONFIG.raffleDomain,
-  headers: {
-    'Authorization': SITE_CONFIG.auth
-  }
-})
 
 class Home extends Component {
   constructor(props) {
@@ -24,7 +17,11 @@ class Home extends Component {
     };
   }
   componentDidMount() {
-    instance.get('')
+    const config = {
+      headers: getHeaders(),
+    }
+    console.log(config);
+    axios.get('https://raffle.serverlessteam.com', config)
       .then(res => {
         console.log(res);
         const raffles = res.data;
