@@ -3,7 +3,8 @@ import axios from 'axios';
 import { Link } from 'react-router-dom'
 import HeroCard from '../HeroCard'
 import Button from '../Button'
-import { getHeaders } from '../utils';
+import { getHeaders } from '../utils'
+import styles from './styles.css' // eslint-disable-line
 
 const colors = ['#c90000', '#c9c90e', '#336999', '#33996f']
 const skip = 4
@@ -142,7 +143,7 @@ export default class PickWinner extends Component {
       </Button>
     )
 
-    const before = <Link to={`/${match.params.shortcode}`}>Back to raffle</Link>
+    const before = <Link className="back-to-raffle" to={`/${match.params.shortcode}`}>Back to raffle</Link>
 
     const contents = (
       <div>
