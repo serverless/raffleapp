@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import axios from 'axios';
 import { Link } from 'react-router-dom'
 import Button from '../Button'
 import styles from './styles.css' // eslint-disable-line
-import { getHeaders } from './../utils';
+import { getHeaders } from './../utils'
 
 
 class Home extends Component {
@@ -96,7 +96,13 @@ class Home extends Component {
       )
     } else {
       return (
-        <h1>No Raffles for you.</h1>
+        <div className="loading-raffles">
+          <div className="loadingWrapper">
+            <div className="pulseWrapper">
+              <div className="pulse"></div>
+            </div>
+          </div>
+        </div>
       )
     }
   }
