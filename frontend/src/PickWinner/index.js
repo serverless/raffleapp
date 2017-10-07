@@ -143,8 +143,6 @@ export default class PickWinner extends Component {
       </Button>
     )
 
-    const before = <Link className="back-to-raffle" to={`/${match.params.shortcode}`}>Back to raffle</Link>
-
     const contents = (
       <div>
         <h2 className="title" ref='winner'>
@@ -153,12 +151,20 @@ export default class PickWinner extends Component {
       </div>
     )
 
+    const afterContent = (
+      <div className="runRaffle">
+        <Link className="back-to-raffle" to={`/${match.params.shortcode}`}>
+          Back to raffle
+        </Link>
+      </div>
+    )
+
     return (
       <HeroCard
         title={'Pick a winner'}
         description={`It's time for a winner!`}
         contents={contents}
-        before={before}
+        after={afterContent}
         actions={actions}
       />
     )

@@ -30,6 +30,7 @@
   border-radius: 0.625rem 0.625rem 0.625rem 0.625rem;
   transition: opacity 0.75s ease 0.125s,transform 0.75s ease 0.125s;
   color: #FFFFFF;
+  min-height: 340px;
 }
 
 .heroCardContents h1 {
