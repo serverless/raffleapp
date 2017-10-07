@@ -10,18 +10,6 @@ logger.setLevel(logging.INFO)
 def handler(event, context):
 
     shortcode = event.get('pathParameters').get('shortcode')
-    body = json.loads(event['body'])
-    winner = body.get('winner')
-
-    if not winner:
-        return {
-            "statusCode": 400,
-            "headers": {
-                "Access-Control-Allow-Origin" : "*",
-                "Access-Control-Allow-Credentials" : True
-            },
-            "body": json.dumps({"error": "Request body must include a 'winner' key"})
-        }
 
     try:
         email= auth.get_email(event['headers'])
@@ -36,7 +24,7 @@ def handler(event, context):
         }
 
     try:
-        db.set_winner_for_raffle(shortcode, email, winner)
+        body = db.set_winner_for_raffle(shortcode, email)
     except db.RaffleDoesNotExist:
         return {
             "statusCode": 404,
@@ -46,14 +34,14 @@ def handler(event, context):
             },
             "body": json.dumps({"message": "Raffle {} does not exist.".format(shortcode)})
         }
-    except db.RaffleHasWinner:
+    except db.NoEntriesForRaffle:
         return {
-            "statusCode": 409,
+            "statusCode": 400,
             "headers": {
                 "Access-Control-Allow-Origin" : "*",
                 "Access-Control-Allow-Credentials" : True
             },
-            "body": json.dumps({"message": "Raffle {} already has a winner.".format(shortcode)})
+            "body": json.dumps({"message": "No entries for raffle {}".format(shortcode)})
         }
     except auth.InvalidAuthentication as e:
         return {
@@ -81,10 +69,7 @@ def handler(event, context):
             "Access-Control-Allow-Origin" : "*",
             "Access-Control-Allow-Credentials" : True
         },
-        "body": json.dumps({
-            "shortcode": shortcode,
-            "winner": winner
-        })
+        "body": json.dumps(body)
     }
 
     return response

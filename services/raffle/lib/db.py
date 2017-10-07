@@ -1,6 +1,7 @@
 from botocore.exceptions import ClientError
 import datetime
 import os
+import random
 
 import boto3
 import dateutil.parser
@@ -19,7 +20,7 @@ class RaffleDoesNotExist(Exception):
 class UserAlreadyRegistered(Exception):
     pass
 
-class RaffleHasWinner(Exception):
+class NoEntriesForRaffle(Exception):
     pass
 
 
@@ -106,9 +107,6 @@ def get_raffle(shortcode, email, client=CLIENT):
         if resp.get('Item'):
             raffle['isRegistered'] = True
 
-    if raffle['admin']:
-        raffle['entries'] = _get_all_emails(shortcode)
-
     return raffle
 
 
@@ -165,7 +163,11 @@ def _get_all_emails(shortcode, last_key=None, client=CLIENT):
     return emails
 
 
-def set_winner_for_raffle(shortcode, email, winner, client=CLIENT):
+def set_winner_for_raffle(shortcode, email, client=CLIENT):
+    body = {
+        'shortcode': shortcode,
+    }
+
     resp = client.get_item(
         TableName=RAFFLE_TABLE_NAME,
         Key={
@@ -182,22 +184,21 @@ def set_winner_for_raffle(shortcode, email, winner, client=CLIENT):
     if not is_raffle_admin(email, admins):
         raise auth.InvalidAuthentication('User is not an admin for this raffle.')
 
-    try:
-        resp = client.update_item(
-            TableName=RAFFLE_TABLE_NAME,
-            Key={
-                'shortcode': {'S': shortcode},
-            },
-            UpdateExpression="SET winner = :winner",
-            ExpressionAttributeValues={
-                ":winner": {'S': winner},
-            },
-            # Don't want to overwrite an existing raffle if same shortcode is generated.
-            ConditionExpression="attribute_not_exists(winner)",
-        )
-    except ClientError as e:
-        if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
-            raise RaffleHasWinner()
-        raise e
+    body['entries'] = _get_all_emails(shortcode)
+    if not body['entries']:
+        raise NoEntriesForRaffle()
 
-    return winner
+    body['winner'] = random.choice(body['entries'])
+
+    resp = client.update_item(
+        TableName=RAFFLE_TABLE_NAME,
+        Key={
+            'shortcode': {'S': shortcode},
+        },
+        UpdateExpression="SET winner = :winner",
+        ExpressionAttributeValues={
+            ":winner": {'S': body['winner']},
+        },
+    )
+
+    return body
