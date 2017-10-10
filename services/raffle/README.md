@@ -97,7 +97,6 @@ JSON response:
 - `winner` - `string` - Winner of the raffle, if there is one.
 - `registered` - `boolean` - Whether the current user is registered for this raffle.
 - `admin` - `boolean` - Whether the current user is an admin for this raffle.
-- `entries` - `array` - Array of email address for current entrants. This is only provided if the authenticated user is an admin.
 
 #### Register for raffle
 
@@ -129,23 +128,17 @@ Sets the winner for a particular raffle
 
 `POST /<shortcode>/winner`
 
-##### Request
-
-JSON object:
-
-- `email` - `string` - required; Email address of winner
-
 ##### Response
 
 Status code:
 
 - `200 OK` on success
-- `400 Bad Request` on validation error
+- `400 Bad Request` if the raffle has no entries
 - `401 Unauthorized` if the user provides invalid authentication
 - `404 Not Found` if the raffle does not exist.
-- `409 Conflict` if the raffle already has a winner.
 
 JSON response:
 
 - `shortcode` - `string` - Shortcode identifier for the raffle
+- `entries` - `array` - Array of email addresses that entered the raffle
 - `email` - `string` - The email address that was registered

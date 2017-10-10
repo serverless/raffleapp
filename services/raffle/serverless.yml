@@ -65,7 +65,7 @@ functions:
     handler: handlers/set_winner.handler
     events:
       - http:
-          path: /{shortcode}/winner
+          path: /{shortcode}
           method: post
           request:
             parameters:

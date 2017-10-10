@@ -24,9 +24,6 @@ def get_email(headers, required=True):
     if not required and not auth:
         return ''
 
-    if auth in ['alexdebrie1@gmail.com', 'a_b_debrie@hotmail.com']:
-        return auth
-
     parts = auth.split()
 
     if parts[0].lower() != "bearer":
