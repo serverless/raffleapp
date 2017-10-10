@@ -9,7 +9,17 @@ logger.setLevel(logging.INFO)
 
 def handler(event, context):
 
-    email = auth.get_email(event['headers'], required=False)
+    try:
+        email = auth.get_email(event['headers'], required=False)
+    except auth.InvalidAuthentication as e:
+        return {
+            "statusCode": 401,
+            "headers": {
+                "Access-Control-Allow-Origin" : "*",
+                "Access-Control-Allow-Credentials" : True
+            },
+            "body": json.dumps({"error": e.message })
+        }
 
     shortcode = event.get('pathParameters').get('shortcode')
 
