@@ -2,7 +2,7 @@
 let callbackUrl = 'http://localhost:3000/callback'
 if (process.env.NODE_ENV === 'production') {
   // in netlify context. See http://bit.ly/2y86cil
-  callbackUrl = 'https://serverless-raffle.netlify.com/callback'
+  callbackUrl = 'https://raffle.serverless.com/callback'
 }
 
 export const AUTH_CONFIG = {

@@ -1,6 +1,6 @@
-import history from '../history';
-import auth0 from 'auth0-js';
-import { AUTH_CONFIG } from './auth0-variables';
+import history from '../history'
+import auth0 from 'auth0-js'
+import { AUTH_CONFIG } from './auth0-variables'
 
 export default class Auth {
   auth0 = new auth0.WebAuth({
@@ -27,16 +27,17 @@ export default class Auth {
   handleAuthentication() {
     this.auth0.parseHash((err, authResult) => {
       if (authResult && authResult.accessToken && authResult.idToken) {
-        this.setSession(authResult);
+        //console.log('authResult', authResult)
+        this.setSession(authResult)
         const lastPage = localStorage.getItem('last_page')
         if (lastPage) {
           return history.replace(`${lastPage}`)
         }
-        history.replace('/');
+        history.replace('/')
       } else if (err) {
-        history.replace('/');
-        console.log(err);
-        alert(`Error: ${err.error}. Check the console for further details.`);
+        history.replace('/')
+        console.log(err)
+        alert(`Error: ${err.error}. Check the console for further details.`)
       }
     });
   }

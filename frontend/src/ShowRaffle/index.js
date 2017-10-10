@@ -11,8 +11,7 @@ class ShowRaffle extends Component {
     super(props);
 
     this.state = {
-      loading: true,
-      authed: props.auth.isAuthenticated()
+      loading: true
     }
   }
   handleRegister = () => {
@@ -71,7 +70,8 @@ class ShowRaffle extends Component {
     })
   }
   renderActions() {
-    const { isRegistered, authed } = this.state
+    const { isRegistered } = this.state
+    const authed = this.props.auth.isAuthenticated()
 
     if (isRegistered) {
       return null
@@ -94,8 +94,9 @@ class ShowRaffle extends Component {
     }
   }
   render() {
-    const { name, entries, description, show404, isRegistered, authed } = this.state
+    const { name, entries, description, show404, isRegistered, admin } = this.state
     const { match } = this.props
+    const authed = this.props.auth.isAuthenticated()
     const showName = name || '...'
     const entrantsCount = (entries) ? entries.length : 0
     if (show404) {
@@ -117,7 +118,7 @@ class ShowRaffle extends Component {
     }
 
     let afterContent
-    if (authed) {
+    if (authed && admin) {
       afterContent = (
         <div className="runRaffle">
           <Link to={`/${match.params.shortcode}/raffle`}>
