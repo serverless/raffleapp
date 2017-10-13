@@ -60,14 +60,13 @@ export default class PickWinner extends Component {
     })
 
     axios({
-      method: 'get', // TODO needs to be post
-      url: `https://raffle.serverlessteam.com/${match.params.shortcode}/entries`,
+      method: 'post', // TODO needs to be post
+      url: `https://raffle.serverlessteam.com/${match.params.shortcode}`,
       headers: getHeaders()
     }).then((response) => {
       console.log('response', response)
       const data = response.data
-      // const emails = data.emails
-      const emails = ['bill@wooohoo.biz', 'steve@what.bike']
+      const emails = data.entries;
       if (false && data && emails && emails.length === 0) {
         this.setState({
           loading: false,
@@ -82,7 +81,7 @@ export default class PickWinner extends Component {
         entrants: emails,
         // entrants: data.emails,
       })
-      const winner = emails[Math.floor(Math.random()*emails.length)]
+      const winner = data.winner;
       setTimeout(() => {
         this.setState({
           tempEntrants: emails,
